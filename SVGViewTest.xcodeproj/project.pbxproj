@@ -16,6 +16,7 @@
 		C14D55C0153D6AC600E37F56 /* TBXML.m in Sources */ = {isa = PBXBuildFile; fileRef = C14D55BF153D6AC600E37F56 /* TBXML.m */; };
 		C14D55E7153D6F6500E37F56 /* svg.proto in Sources */ = {isa = PBXBuildFile; fileRef = C1AFE5F6141F62D80092FF0C /* svg.proto */; };
 		C14D55EA153D70EB00E37F56 /* libprotobuf-lite.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C14D55E2153D6F0900E37F56 /* libprotobuf-lite.a */; };
+		C14D55EB153D74CC00E37F56 /* libprotobuff-lite-mac.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C14D55E4153D6F0900E37F56 /* libprotobuff-lite-mac.a */; };
 		C1AFE5DE141F61760092FF0C /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = C1AFE5DD141F61760092FF0C /* main.mm */; };
 		C1AFE5F8141F62F90092FF0C /* svg.proto in Sources */ = {isa = PBXBuildFile; fileRef = C1AFE5F6141F62D80092FF0C /* svg.proto */; };
 		C1AFE63F141F6C6E0092FF0C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1BB056413FBD3760063B1D1 /* Foundation.framework */; };
@@ -164,6 +165,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C14D55EB153D74CC00E37F56 /* libprotobuff-lite-mac.a in Frameworks */,
 				C1AFE63F141F6C6E0092FF0C /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
