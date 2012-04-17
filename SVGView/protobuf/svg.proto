@@ -1,0 +1,116 @@
+option optimize_for = LITE_RUNTIME;
+
+
+message ProtoPoint
+{
+    optional float x = 1;
+    optional float y = 2;
+}
+
+message ProtoCurve
+{
+    optional float cp1x = 1;
+    optional float cp1y = 2;
+    optional float cp2x = 3;
+    optional float cp2y = 4;
+    optional float x    = 5;
+    optional float y    = 6;
+}
+
+message ProtoRect
+{
+    optional float x = 1;
+    optional float y = 2;
+    optional float w = 3;
+    optional float h = 4;
+};
+
+message ProtoColor
+{
+    optional int32 r = 1;
+    optional int32 g = 2;
+    optional int32 b = 3;
+};
+
+message ProtoAffineTransformMatrix
+{
+    optional float a  = 1;
+    optional float b  = 2;
+    optional float c  = 3;
+    optional float d  = 4;
+    optional float tx = 5;
+    optional float ty = 6;
+}
+
+message ProtoSVGElement
+{
+    optional ProtoSVGGeneralParams      group    = 1;
+    optional ProtoSVGElementPath        path     = 2;
+    optional ProtoSVGElementGradient    gradient = 3;
+    optional ProtoSVGGeneralParams      defs     = 4;
+};
+
+message ProtoSVGPaint
+{
+    optional ProtoColor color     = 1;
+    optional string     ref_id    = 2;
+    optional bool       paint_off = 3;
+    optional bool       odd       = 4 [default = false];
+};
+
+message ProtoSVGGeneralParams
+{
+    repeated ProtoSVGElement            childs       = 1;
+    optional string                     id           = 2;
+    optional ProtoSVGPaint              fill         = 3;
+    optional ProtoSVGPaint              stroke       = 4;
+    optional ProtoAffineTransformMatrix transform    = 5;
+    optional float                      opacity      = 6 [default = 1];
+};
+
+message ProtoSVGElementGradient
+{
+    message GradientStop
+    {
+        optional float          offset     = 1;
+        optional ProtoColor     color      = 2;
+        optional float          alpha      = 3;
+    }
+
+    optional ProtoSVGGeneralParams      params              = 1;
+    repeated GradientStop               stops               = 3;
+    optional ProtoAffineTransformMatrix gradientTransform   = 4;
+    optional ProtoPoint                 startPoint          = 5;
+    optional ProtoPoint                 endPoint            = 6;
+    optional ProtoPoint                 center              = 7;
+    optional float                      r                   = 8;
+}
+
+
+message ProtoSVGElementPath
+{
+    message PathPoint
+    {
+        optional ProtoPoint    move_to     = 1;
+        optional ProtoPoint    line_to     = 2;
+        optional ProtoCurve    curve_to    = 3;
+        optional bool          close_path  = 4 [default = false];
+    }
+
+    optional ProtoSVGGeneralParams  params  = 1;
+
+    repeated PathPoint              points    = 3; //filled if this is generall path
+    optional float                  cx        = 4; //filled if this is circle or ellipse
+    optional float                  cy        = 5; //filled if this is circle or ellipse
+    optional float                  rx        = 6; //filled if this is ellipse
+    optional float                  ry        = 7; //filled if this is ellipse
+    optional float                  r         = 8; //filled if this is circle
+    optional ProtoRect              rect      = 9; //filled if this is rect
+};
+
+message ProtoSVGRoot
+{
+    optional ProtoSVGGeneralParams  params = 1;
+    optional ProtoRect              frame  = 2;
+    optional ProtoRect              bounds = 3;
+};

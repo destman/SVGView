@@ -1,0 +1,11 @@
+build*
+*.pbxuser
+*.perspectivev3
+.svn
+xcuserdata
+project.xcworkspace
+*.mode1v3
+Classes/.DS_Store
+.DS_Store
+*.pb.cc
+*.pb.h

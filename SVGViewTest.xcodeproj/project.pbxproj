@@ -1,0 +1,642 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		C14D5595153D5C6B00E37F56 /* Logger.mm in Sources */ = {isa = PBXBuildFile; fileRef = C14D5594153D5C6B00E37F56 /* Logger.mm */; };
+		C14D5596153D5C6B00E37F56 /* Logger.mm in Sources */ = {isa = PBXBuildFile; fileRef = C14D5594153D5C6B00E37F56 /* Logger.mm */; };
+		C14D5597153D5DD100E37F56 /* SVGView.mm in Sources */ = {isa = PBXBuildFile; fileRef = C15330E413FBD41F000CECC0 /* SVGView.mm */; };
+		C14D5599153D5DDA00E37F56 /* SVGButton.mm in Sources */ = {isa = PBXBuildFile; fileRef = C1D0669514D8235D00802591 /* SVGButton.mm */; };
+		C14D55BC153D608E00E37F56 /* PBFileStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C14D55BA153D608E00E37F56 /* PBFileStream.cpp */; };
+		C14D55BD153D60F300E37F56 /* PBFileStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C14D55BA153D608E00E37F56 /* PBFileStream.cpp */; };
+		C14D55C0153D6AC600E37F56 /* TBXML.m in Sources */ = {isa = PBXBuildFile; fileRef = C14D55BF153D6AC600E37F56 /* TBXML.m */; };
+		C14D55E7153D6F6500E37F56 /* svg.proto in Sources */ = {isa = PBXBuildFile; fileRef = C1AFE5F6141F62D80092FF0C /* svg.proto */; };
+		C14D55EA153D70EB00E37F56 /* libprotobuf-lite.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C14D55E2153D6F0900E37F56 /* libprotobuf-lite.a */; };
+		C1AFE5DE141F61760092FF0C /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = C1AFE5DD141F61760092FF0C /* main.mm */; };
+		C1AFE5F8141F62F90092FF0C /* svg.proto in Sources */ = {isa = PBXBuildFile; fileRef = C1AFE5F6141F62D80092FF0C /* svg.proto */; };
+		C1AFE63F141F6C6E0092FF0C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1BB056413FBD3760063B1D1 /* Foundation.framework */; };
+		C1D0664D14D81FCA00802591 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1BB056213FBD3760063B1D1 /* UIKit.framework */; };
+		C1D0664E14D81FCA00802591 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1BB056413FBD3760063B1D1 /* Foundation.framework */; };
+		C1D0664F14D81FCA00802591 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C153333813FBDAC5000CECC0 /* CoreGraphics.framework */; };
+		C1D0665714D81FCA00802591 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C1D0665614D81FCA00802591 /* main.m */; };
+		C1D0665B14D81FCA00802591 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C1D0665A14D81FCA00802591 /* AppDelegate.m */; };
+		C1D0667014D8219500802591 /* TestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C1D0666E14D8219500802591 /* TestViewController.m */; };
+		C1D0667114D8219500802591 /* TestViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C1D0666F14D8219500802591 /* TestViewController.xib */; };
+		C1D0668514D8228500802591 /* btn_test.svg in Resources */ = {isa = PBXBuildFile; fileRef = C1D0668414D8228500802591 /* btn_test.svg */; };
+		C1D0669814D8241000802591 /* SVGRender.mm in Sources */ = {isa = PBXBuildFile; fileRef = C1D0669714D8241000802591 /* SVGRender.mm */; };
+		C1D0669B14D8269900802591 /* main_bg.svg in Resources */ = {isa = PBXBuildFile; fileRef = C1D0669A14D8269900802591 /* main_bg.svg */; };
+		C1F72765141F6E8000CE8C94 /* SVGGeneralParams.mm in Sources */ = {isa = PBXBuildFile; fileRef = C1F7275A141F6E8000CE8C94 /* SVGGeneralParams.mm */; };
+		C1F72766141F6E8000CE8C94 /* SVGRoot.mm in Sources */ = {isa = PBXBuildFile; fileRef = C1F7275C141F6E8000CE8C94 /* SVGRoot.mm */; };
+		C1F72767141F6E8000CE8C94 /* SVGGradient.mm in Sources */ = {isa = PBXBuildFile; fileRef = C1F7275E141F6E8000CE8C94 /* SVGGradient.mm */; };
+		C1F72769141F6E8000CE8C94 /* SVGParseTools.mm in Sources */ = {isa = PBXBuildFile; fileRef = C1F72762141F6E8000CE8C94 /* SVGParseTools.mm */; };
+		C1F7276A141F6E8000CE8C94 /* SVGPath.mm in Sources */ = {isa = PBXBuildFile; fileRef = C1F72764141F6E8000CE8C94 /* SVGPath.mm */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXBuildRule section */
+		C1AFE606141F63250092FF0C /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.proto";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(INPUT_FILE_DIR)/$(INPUT_FILE_BASE).pb.h",
+				"$(INPUT_FILE_DIR)/$(INPUT_FILE_BASE).pb.cc",
+			);
+			script = "/usr/local/bin/protoc --proto_path=\"$INPUT_FILE_DIR\" --cpp_out=\"$INPUT_FILE_DIR\" $INPUT_FILE_PATH";
+		};
+		C1D0667714D8221100802591 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.proto";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(INPUT_FILE_DIR)/$(INPUT_FILE_BASE).pb.cc",
+			);
+			script = "/usr/local/bin/protoc --proto_path=\"$INPUT_FILE_DIR\" --cpp_out=\"$INPUT_FILE_DIR\" $INPUT_FILE_PATH";
+		};
+		C1D0668314D8226700802591 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.svg";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(TARGET_BUILD_DIR)/$(WRAPPER_NAME)/$(INPUT_FILE_BASE).svgpb",
+			);
+			script = "/usr/bin/svg2pb \"$INPUT_FILE_PATH\" \"$TARGET_BUILD_DIR/$WRAPPER_NAME/$INPUT_FILE_BASE.svgpb\"";
+		};
+/* End PBXBuildRule section */
+
+/* Begin PBXContainerItemProxy section */
+		C14D55DF153D6F0900E37F56 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C14D55D6153D6F0800E37F56 /* protobuf.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D2AAC07E0554694100DB518D;
+			remoteInfo = protobuf;
+		};
+		C14D55E1153D6F0900E37F56 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C14D55D6153D6F0800E37F56 /* protobuf.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 339A3AF912708A8C000A5714;
+			remoteInfo = "protobuf-lite";
+		};
+		C14D55E3153D6F0900E37F56 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C14D55D6153D6F0800E37F56 /* protobuf.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = C1F3460D1439B03000A10156;
+			remoteInfo = "protobuff-lite-mac";
+		};
+		C14D55E5153D6F1400E37F56 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C14D55D6153D6F0800E37F56 /* protobuf.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = C1F3460C1439B03000A10156;
+			remoteInfo = "protobuff-lite-mac";
+		};
+		C14D55E8153D6F7D00E37F56 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C14D55D6153D6F0800E37F56 /* protobuf.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 339A3AF812708A8C000A5714;
+			remoteInfo = "protobuf-lite";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		C14D5593153D5C6B00E37F56 /* Logger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Logger.h; sourceTree = "<group>"; };
+		C14D5594153D5C6B00E37F56 /* Logger.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Logger.mm; sourceTree = "<group>"; };
+		C14D55BA153D608E00E37F56 /* PBFileStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PBFileStream.cpp; sourceTree = "<group>"; };
+		C14D55BB153D608E00E37F56 /* PBFileStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBFileStream.h; sourceTree = "<group>"; };
+		C14D55BE153D6AC500E37F56 /* TBXML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBXML.h; sourceTree = "<group>"; };
+		C14D55BF153D6AC600E37F56 /* TBXML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TBXML.m; sourceTree = "<group>"; };
+		C14D55D6153D6F0800E37F56 /* protobuf.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = protobuf.xcodeproj; path = Tools/protobuf/mac/protobuf.xcodeproj; sourceTree = "<group>"; };
+		C15330E313FBD41F000CECC0 /* SVGView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVGView.h; sourceTree = "<group>"; };
+		C15330E413FBD41F000CECC0 /* SVGView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SVGView.mm; sourceTree = "<group>"; };
+		C153333513FBDAAC000CECC0 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		C153333813FBDAC5000CECC0 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		C1AFE5DA141F61760092FF0C /* svg2pb */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = svg2pb; sourceTree = BUILT_PRODUCTS_DIR; };
+		C1AFE5DD141F61760092FF0C /* main.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
+		C1AFE5F6141F62D80092FF0C /* svg.proto */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = svg.proto; sourceTree = "<group>"; };
+		C1AFE607141F64FF0092FF0C /* svg.pb.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = svg.pb.cc; sourceTree = "<group>"; };
+		C1AFE608141F64FF0092FF0C /* svg.pb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = svg.pb.h; sourceTree = "<group>"; };
+		C1BB056213FBD3760063B1D1 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		C1BB056413FBD3760063B1D1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		C1D0664B14D81FCA00802591 /* SVGViewTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SVGViewTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C1D0665214D81FCA00802591 /* SVGViewTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SVGViewTest-Info.plist"; sourceTree = "<group>"; };
+		C1D0665614D81FCA00802591 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		C1D0665814D81FCA00802591 /* SVGViewTest-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SVGViewTest-Prefix.pch"; sourceTree = "<group>"; };
+		C1D0665914D81FCA00802591 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		C1D0665A14D81FCA00802591 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		C1D0666D14D8219500802591 /* TestViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestViewController.h; sourceTree = "<group>"; };
+		C1D0666E14D8219500802591 /* TestViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestViewController.m; sourceTree = "<group>"; };
+		C1D0666F14D8219500802591 /* TestViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TestViewController.xib; sourceTree = "<group>"; };
+		C1D0668414D8228500802591 /* btn_test.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = btn_test.svg; sourceTree = "<group>"; };
+		C1D0669414D8235D00802591 /* SVGButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVGButton.h; sourceTree = "<group>"; };
+		C1D0669514D8235D00802591 /* SVGButton.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SVGButton.mm; sourceTree = "<group>"; };
+		C1D0669714D8241000802591 /* SVGRender.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SVGRender.mm; sourceTree = "<group>"; };
+		C1D0669914D8242300802591 /* SVGRender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVGRender.h; sourceTree = "<group>"; };
+		C1D0669A14D8269900802591 /* main_bg.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = main_bg.svg; sourceTree = "<group>"; };
+		C1E35E5214BF1F7100FB2589 /* test.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = test.svg; sourceTree = "<group>"; };
+		C1F72759141F6E8000CE8C94 /* SVGGeneralParams.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVGGeneralParams.h; sourceTree = "<group>"; };
+		C1F7275A141F6E8000CE8C94 /* SVGGeneralParams.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SVGGeneralParams.mm; sourceTree = "<group>"; };
+		C1F7275B141F6E8000CE8C94 /* SVGRoot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVGRoot.h; sourceTree = "<group>"; };
+		C1F7275C141F6E8000CE8C94 /* SVGRoot.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SVGRoot.mm; sourceTree = "<group>"; };
+		C1F7275D141F6E8000CE8C94 /* SVGGradient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVGGradient.h; sourceTree = "<group>"; };
+		C1F7275E141F6E8000CE8C94 /* SVGGradient.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SVGGradient.mm; sourceTree = "<group>"; };
+		C1F72761141F6E8000CE8C94 /* SVGParseTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVGParseTools.h; sourceTree = "<group>"; };
+		C1F72762141F6E8000CE8C94 /* SVGParseTools.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SVGParseTools.mm; sourceTree = "<group>"; };
+		C1F72763141F6E8000CE8C94 /* SVGPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVGPath.h; sourceTree = "<group>"; };
+		C1F72764141F6E8000CE8C94 /* SVGPath.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SVGPath.mm; sourceTree = "<group>"; };
+		C1F7276D141F6ECF00CE8C94 /* svg2pb-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "svg2pb-Prefix.pch"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C1AFE5D7141F61760092FF0C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C1AFE63F141F6C6E0092FF0C /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C1D0664814D81FCA00802591 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C14D55EA153D70EB00E37F56 /* libprotobuf-lite.a in Frameworks */,
+				C1D0664D14D81FCA00802591 /* UIKit.framework in Frameworks */,
+				C1D0664E14D81FCA00802591 /* Foundation.framework in Frameworks */,
+				C1D0664F14D81FCA00802591 /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		C14D5592153D5C6B00E37F56 /* Tools */ = {
+			isa = PBXGroup;
+			children = (
+				C14D5593153D5C6B00E37F56 /* Logger.h */,
+				C14D5594153D5C6B00E37F56 /* Logger.mm */,
+				C14D55BA153D608E00E37F56 /* PBFileStream.cpp */,
+				C14D55BB153D608E00E37F56 /* PBFileStream.h */,
+				C14D55BE153D6AC500E37F56 /* TBXML.h */,
+				C14D55BF153D6AC600E37F56 /* TBXML.m */,
+			);
+			path = Tools;
+			sourceTree = "<group>";
+		};
+		C14D55D7153D6F0800E37F56 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C14D55E0153D6F0900E37F56 /* libprotobuf.a */,
+				C14D55E2153D6F0900E37F56 /* libprotobuf-lite.a */,
+				C14D55E4153D6F0900E37F56 /* libprotobuff-lite-mac.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C15330E013FBD41F000CECC0 /* SVGView */ = {
+			isa = PBXGroup;
+			children = (
+				C1AFE5F3141F62B80092FF0C /* protobuf */,
+				C15330E313FBD41F000CECC0 /* SVGView.h */,
+				C15330E413FBD41F000CECC0 /* SVGView.mm */,
+				C1D0669414D8235D00802591 /* SVGButton.h */,
+				C1D0669514D8235D00802591 /* SVGButton.mm */,
+				C1D0669914D8242300802591 /* SVGRender.h */,
+				C1D0669714D8241000802591 /* SVGRender.mm */,
+			);
+			path = SVGView;
+			sourceTree = "<group>";
+		};
+		C1AFE5DC141F61760092FF0C /* svg2pb */ = {
+			isa = PBXGroup;
+			children = (
+				C1F72758141F6E8000CE8C94 /* SVGData */,
+				C1E35E5214BF1F7100FB2589 /* test.svg */,
+				C1AFE5DD141F61760092FF0C /* main.mm */,
+				C1F7276D141F6ECF00CE8C94 /* svg2pb-Prefix.pch */,
+			);
+			path = svg2pb;
+			sourceTree = "<group>";
+		};
+		C1AFE5F3141F62B80092FF0C /* protobuf */ = {
+			isa = PBXGroup;
+			children = (
+				C1AFE607141F64FF0092FF0C /* svg.pb.cc */,
+				C1AFE608141F64FF0092FF0C /* svg.pb.h */,
+				C1AFE5F6141F62D80092FF0C /* svg.proto */,
+			);
+			path = protobuf;
+			sourceTree = "<group>";
+		};
+		C1BB055313FBD3750063B1D1 = {
+			isa = PBXGroup;
+			children = (
+				C14D5592153D5C6B00E37F56 /* Tools */,
+				C15330E013FBD41F000CECC0 /* SVGView */,
+				C1AFE5DC141F61760092FF0C /* svg2pb */,
+				C1D0665014D81FCA00802591 /* SVGViewTest */,
+				C1BB056113FBD3760063B1D1 /* Frameworks */,
+				C1BB055F13FBD3760063B1D1 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		C1BB055F13FBD3760063B1D1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C1AFE5DA141F61760092FF0C /* svg2pb */,
+				C1D0664B14D81FCA00802591 /* SVGViewTest.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C1BB056113FBD3760063B1D1 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C14D55D6153D6F0800E37F56 /* protobuf.xcodeproj */,
+				C153333813FBDAC5000CECC0 /* CoreGraphics.framework */,
+				C153333513FBDAAC000CECC0 /* QuartzCore.framework */,
+				C1BB056213FBD3760063B1D1 /* UIKit.framework */,
+				C1BB056413FBD3760063B1D1 /* Foundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		C1D0665014D81FCA00802591 /* SVGViewTest */ = {
+			isa = PBXGroup;
+			children = (
+				C1D0665914D81FCA00802591 /* AppDelegate.h */,
+				C1D0665A14D81FCA00802591 /* AppDelegate.m */,
+				C1D0666D14D8219500802591 /* TestViewController.h */,
+				C1D0666E14D8219500802591 /* TestViewController.m */,
+				C1D0666F14D8219500802591 /* TestViewController.xib */,
+				C1D0665814D81FCA00802591 /* SVGViewTest-Prefix.pch */,
+				C1D0665214D81FCA00802591 /* SVGViewTest-Info.plist */,
+				C1D0665614D81FCA00802591 /* main.m */,
+				C1D0668414D8228500802591 /* btn_test.svg */,
+				C1D0669A14D8269900802591 /* main_bg.svg */,
+			);
+			path = SVGViewTest;
+			sourceTree = "<group>";
+		};
+		C1F72758141F6E8000CE8C94 /* SVGData */ = {
+			isa = PBXGroup;
+			children = (
+				C1F7275B141F6E8000CE8C94 /* SVGRoot.h */,
+				C1F7275C141F6E8000CE8C94 /* SVGRoot.mm */,
+				C1F72759141F6E8000CE8C94 /* SVGGeneralParams.h */,
+				C1F7275A141F6E8000CE8C94 /* SVGGeneralParams.mm */,
+				C1F7275D141F6E8000CE8C94 /* SVGGradient.h */,
+				C1F7275E141F6E8000CE8C94 /* SVGGradient.mm */,
+				C1F72761141F6E8000CE8C94 /* SVGParseTools.h */,
+				C1F72762141F6E8000CE8C94 /* SVGParseTools.mm */,
+				C1F72763141F6E8000CE8C94 /* SVGPath.h */,
+				C1F72764141F6E8000CE8C94 /* SVGPath.mm */,
+			);
+			path = SVGData;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		C1AFE5D9141F61760092FF0C /* svg2pb */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C1AFE5E1141F61770092FF0C /* Build configuration list for PBXNativeTarget "svg2pb" */;
+			buildPhases = (
+				C1AFE5D6141F61760092FF0C /* Sources */,
+				C1AFE5D7141F61760092FF0C /* Frameworks */,
+				C13535ED142A1A7100C211D2 /* ShellScript */,
+			);
+			buildRules = (
+				C1AFE606141F63250092FF0C /* PBXBuildRule */,
+			);
+			dependencies = (
+				C14D55E6153D6F1400E37F56 /* PBXTargetDependency */,
+			);
+			name = svg2pb;
+			productName = svg2pb;
+			productReference = C1AFE5DA141F61760092FF0C /* svg2pb */;
+			productType = "com.apple.product-type.tool";
+		};
+		C1D0664A14D81FCA00802591 /* SVGViewTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C1D0665C14D81FCA00802591 /* Build configuration list for PBXNativeTarget "SVGViewTest" */;
+			buildPhases = (
+				C1D0664914D81FCA00802591 /* Resources */,
+				C1D0664714D81FCA00802591 /* Sources */,
+				C1D0664814D81FCA00802591 /* Frameworks */,
+			);
+			buildRules = (
+				C1D0668314D8226700802591 /* PBXBuildRule */,
+				C1D0667714D8221100802591 /* PBXBuildRule */,
+			);
+			dependencies = (
+				C14D55E9153D6F7D00E37F56 /* PBXTargetDependency */,
+			);
+			name = SVGViewTest;
+			productName = SVGViewTest;
+			productReference = C1D0664B14D81FCA00802591 /* SVGViewTest.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		C1BB055513FBD3750063B1D1 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
+			buildConfigurationList = C1BB055813FBD3750063B1D1 /* Build configuration list for PBXProject "SVGViewTest" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				de,
+				es,
+				fr,
+				it,
+				ru,
+			);
+			mainGroup = C1BB055313FBD3750063B1D1;
+			productRefGroup = C1BB055F13FBD3760063B1D1 /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = C14D55D7153D6F0800E37F56 /* Products */;
+					ProjectRef = C14D55D6153D6F0800E37F56 /* protobuf.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				C1AFE5D9141F61760092FF0C /* svg2pb */,
+				C1D0664A14D81FCA00802591 /* SVGViewTest */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		C14D55E0153D6F0900E37F56 /* libprotobuf.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libprotobuf.a;
+			remoteRef = C14D55DF153D6F0900E37F56 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		C14D55E2153D6F0900E37F56 /* libprotobuf-lite.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libprotobuf-lite.a";
+			remoteRef = C14D55E1153D6F0900E37F56 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		C14D55E4153D6F0900E37F56 /* libprotobuff-lite-mac.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libprotobuff-lite-mac.a";
+			remoteRef = C14D55E3153D6F0900E37F56 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C1D0664914D81FCA00802591 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C1D0667114D8219500802591 /* TestViewController.xib in Resources */,
+				C1D0668514D8228500802591 /* btn_test.svg in Resources */,
+				C1D0669B14D8269900802591 /* main_bg.svg in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		C13535ED142A1A7100C211D2 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 12;
+			files = (
+			);
+			inputPaths = (
+				"$(TARGET_BUILD_DIR)/$(EXECUTABLE_NAME)",
+			);
+			outputPaths = (
+				"$(INSTALL_PATH)/$(EXECUTABLE_NAME)",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "osascript -e \"do shell script \\\"cp $TARGET_BUILD_DIR/$EXECUTABLE_NAME $INSTALL_PATH/$EXECUTABLE_NAME\\\" with administrator privileges\"\n\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C1AFE5D6141F61760092FF0C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C1AFE5DE141F61760092FF0C /* main.mm in Sources */,
+				C1AFE5F8141F62F90092FF0C /* svg.proto in Sources */,
+				C1F72765141F6E8000CE8C94 /* SVGGeneralParams.mm in Sources */,
+				C1F72766141F6E8000CE8C94 /* SVGRoot.mm in Sources */,
+				C1F72767141F6E8000CE8C94 /* SVGGradient.mm in Sources */,
+				C1F72769141F6E8000CE8C94 /* SVGParseTools.mm in Sources */,
+				C1F7276A141F6E8000CE8C94 /* SVGPath.mm in Sources */,
+				C14D5595153D5C6B00E37F56 /* Logger.mm in Sources */,
+				C14D55BC153D608E00E37F56 /* PBFileStream.cpp in Sources */,
+				C14D55C0153D6AC600E37F56 /* TBXML.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C1D0664714D81FCA00802591 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C14D55E7153D6F6500E37F56 /* svg.proto in Sources */,
+				C1D0665714D81FCA00802591 /* main.m in Sources */,
+				C1D0665B14D81FCA00802591 /* AppDelegate.m in Sources */,
+				C1D0667014D8219500802591 /* TestViewController.m in Sources */,
+				C1D0669814D8241000802591 /* SVGRender.mm in Sources */,
+				C14D5596153D5C6B00E37F56 /* Logger.mm in Sources */,
+				C14D5597153D5DD100E37F56 /* SVGView.mm in Sources */,
+				C14D5599153D5DDA00E37F56 /* SVGButton.mm in Sources */,
+				C14D55BD153D60F300E37F56 /* PBFileStream.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		C14D55E6153D6F1400E37F56 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "protobuff-lite-mac";
+			targetProxy = C14D55E5153D6F1400E37F56 /* PBXContainerItemProxy */;
+		};
+		C14D55E9153D6F7D00E37F56 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "protobuf-lite";
+			targetProxy = C14D55E8153D6F7D00E37F56 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		C1AFE5E2141F61770092FF0C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "svg2pb/svg2pb-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
+				INSTALL_PATH = /usr/bin/;
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		C1AFE5E3141F61770092FF0C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "svg2pb/svg2pb-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
+				INSTALL_PATH = /usr/bin/;
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		C1BB057213FBD3760063B1D1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = ../protobuf/src;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		C1BB057313FBD3760063B1D1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = ../protobuf/src;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = NO;
+			};
+			name = Release;
+		};
+		C1D0665D14D81FCA00802591 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SVGViewTest/SVGViewTest-Prefix.pch";
+				HEADER_SEARCH_PATHS = Tools/protobuf/src;
+				INFOPLIST_FILE = "SVGViewTest/SVGViewTest-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		C1D0665E14D81FCA00802591 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SVGViewTest/SVGViewTest-Prefix.pch";
+				HEADER_SEARCH_PATHS = Tools/protobuf/src;
+				INFOPLIST_FILE = "SVGViewTest/SVGViewTest-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALIDATE_PRODUCT = YES;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C1AFE5E1141F61770092FF0C /* Build configuration list for PBXNativeTarget "svg2pb" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C1AFE5E2141F61770092FF0C /* Debug */,
+				C1AFE5E3141F61770092FF0C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C1BB055813FBD3750063B1D1 /* Build configuration list for PBXProject "SVGViewTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C1BB057213FBD3760063B1D1 /* Debug */,
+				C1BB057313FBD3760063B1D1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C1D0665C14D81FCA00802591 /* Build configuration list for PBXNativeTarget "SVGViewTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C1D0665D14D81FCA00802591 /* Debug */,
+				C1D0665E14D81FCA00802591 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = C1BB055513FBD3750063B1D1 /* Project object */;
+}

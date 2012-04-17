@@ -1,0 +1,30 @@
+//
+// Prefix header for all source files of the 'SVGViewTest' target in the 'SVGViewTest' project
+//
+
+#import <Availability.h>
+
+#ifdef __OBJC__
+    #import <UIKit/UIKit.h>
+    #import <Foundation/Foundation.h>
+#endif
+
+#include "Logger.h"
+
+
+#if __has_feature(objc_arc)
+#define HAVE_ARC 1
+#else
+#define HAVE_ARC 0
+#endif
+
+
+#if HAVE_ARC
+#define AUTORELEASE(x) x
+#define RELEASE(x)
+#define RETAIN(x) x
+#else
+#define AUTORELEASE(x)[x autorelease]
+#define RELEASE(x) [x release]
+#define RETAIN(x) [x retain]
+#endif

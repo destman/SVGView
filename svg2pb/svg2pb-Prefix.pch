@@ -1,0 +1,21 @@
+//
+// Prefix header for all source files of the 'SVGView' target in the 'SVGView' project
+//
+
+
+#ifdef __OBJC__
+#import <Foundation/Foundation.h>
+#endif
+
+#if HAVE_ARC
+#define AUTORELEASE(x) x
+#define RELEASE(x)
+#define RETAIN(x) x
+#else
+#define AUTORELEASE(x)[x autorelease]
+#define RELEASE(x) [x release]
+#define RETAIN(x) [x retain]
+#endif
+
+#include "Logger.h"
+
