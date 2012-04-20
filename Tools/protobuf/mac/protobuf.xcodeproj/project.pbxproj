@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		339A3B0612708AAE000A5714 /* common.cc in Sources */ = {isa = PBXBuildFile; fileRef = 33C88BE012704BCC0017A933 /* common.cc */; };
 		339A3B0712708ABB000A5714 /* once.cc in Sources */ = {isa = PBXBuildFile; fileRef = 33C88BE612704BCC0017A933 /* once.cc */; };
-		339A3B0912708B18000A5714 /* hash.cc in Sources */ = {isa = PBXBuildFile; fileRef = 33C88BE312704BCC0017A933 /* hash.cc */; };
 		339A3B0A12708B1A000A5714 /* hash.h in Headers */ = {isa = PBXBuildFile; fileRef = 33C88BE412704BCC0017A933 /* hash.h */; };
 		339A3B0B12708B23000A5714 /* map-util.h in Headers */ = {isa = PBXBuildFile; fileRef = 33C88BE512704BCC0017A933 /* map-util.h */; };
 		339A3B0C12708B29000A5714 /* stl_util-inl.h in Headers */ = {isa = PBXBuildFile; fileRef = 33C88BE912704BCC0017A933 /* stl_util-inl.h */; };
@@ -31,7 +30,6 @@
 		339A3B9212719CC9000A5714 /* coded_stream_inl.h in Headers */ = {isa = PBXBuildFile; fileRef = 33C88BBD12704BCC0017A933 /* coded_stream_inl.h */; };
 		339A3B9312719CC9000A5714 /* wire_format_lite.cc in Sources */ = {isa = PBXBuildFile; fileRef = 33C88C1512704BCC0017A933 /* wire_format_lite.cc */; };
 		339A3B9412719CC9000A5714 /* zero_copy_stream.cc in Sources */ = {isa = PBXBuildFile; fileRef = 33C88BC912704BCC0017A933 /* zero_copy_stream.cc */; };
-		339A3B9512719CC9000A5714 /* hash.cc in Sources */ = {isa = PBXBuildFile; fileRef = 33C88BE312704BCC0017A933 /* hash.cc */; };
 		339A3B9612719CC9000A5714 /* repeated_field.cc in Sources */ = {isa = PBXBuildFile; fileRef = 33C88BDA12704BCC0017A933 /* repeated_field.cc */; };
 		339A3B9712719CC9000A5714 /* stl_util-inl.h in Headers */ = {isa = PBXBuildFile; fileRef = 33C88BE912704BCC0017A933 /* stl_util-inl.h */; };
 		339A3B9812719CC9000A5714 /* common.cc in Sources */ = {isa = PBXBuildFile; fileRef = 33C88BE012704BCC0017A933 /* common.cc */; };
@@ -63,7 +61,6 @@
 		AA747D9F0F9514B9006C5449 /* protobuf_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = AA747D9E0F9514B9006C5449 /* protobuf_Prefix.pch */; };
 		C11B0B631439B43700818DC3 /* common.cc in Sources */ = {isa = PBXBuildFile; fileRef = 33C88BE012704BCC0017A933 /* common.cc */; };
 		C11B0B651439B43E00818DC3 /* once.cc in Sources */ = {isa = PBXBuildFile; fileRef = 33C88BE612704BCC0017A933 /* once.cc */; };
-		C11B0B661439B44700818DC3 /* hash.cc in Sources */ = {isa = PBXBuildFile; fileRef = 33C88BE312704BCC0017A933 /* hash.cc */; };
 		C11B0B671439B46600818DC3 /* generated_message_util.cc in Sources */ = {isa = PBXBuildFile; fileRef = 33C88BB812704BCC0017A933 /* generated_message_util.cc */; };
 		C11B0B681439B48000818DC3 /* message_lite.cc in Sources */ = {isa = PBXBuildFile; fileRef = 33C88BD312704BCC0017A933 /* message_lite.cc */; };
 		C11B0B691439B48D00818DC3 /* repeated_field.cc in Sources */ = {isa = PBXBuildFile; fileRef = 33C88BDA12704BCC0017A933 /* repeated_field.cc */; };
@@ -216,7 +213,6 @@
 		33C88BE012704BCC0017A933 /* common.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = common.cc; sourceTree = "<group>"; };
 		33C88BE112704BCC0017A933 /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = common.h; sourceTree = "<group>"; };
 		33C88BE212704BCC0017A933 /* common_unittest.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = common_unittest.cc; sourceTree = "<group>"; };
-		33C88BE312704BCC0017A933 /* hash.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hash.cc; sourceTree = "<group>"; };
 		33C88BE412704BCC0017A933 /* hash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hash.h; sourceTree = "<group>"; };
 		33C88BE512704BCC0017A933 /* map-util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "map-util.h"; sourceTree = "<group>"; };
 		33C88BE612704BCC0017A933 /* once.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = once.cc; sourceTree = "<group>"; };
@@ -270,7 +266,7 @@
 		33C88C1812704BCC0017A933 /* wire_format_unittest.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = wire_format_unittest.cc; sourceTree = "<group>"; };
 		AA747D9E0F9514B9006C5449 /* protobuf_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = protobuf_Prefix.pch; sourceTree = SOURCE_ROOT; };
 		AACBBE490F95108600F1A2B1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		C1F3460D1439B03000A10156 /* libprotobuff-lite-mac.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libprotobuff-lite-mac.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C1F3460D1439B03000A10156 /* libprotobuf-lite-mac.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libprotobuf-lite-mac.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D2AAC07E0554694100DB518D /* libprotobuf.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libprotobuf.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -304,7 +300,7 @@
 			children = (
 				D2AAC07E0554694100DB518D /* libprotobuf.a */,
 				339A3AF912708A8C000A5714 /* libprotobuf-lite.a */,
-				C1F3460D1439B03000A10156 /* libprotobuff-lite-mac.a */,
+				C1F3460D1439B03000A10156 /* libprotobuf-lite-mac.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -582,7 +578,6 @@
 				33C88BE012704BCC0017A933 /* common.cc */,
 				33C88BE112704BCC0017A933 /* common.h */,
 				33C88BE212704BCC0017A933 /* common_unittest.cc */,
-				33C88BE312704BCC0017A933 /* hash.cc */,
 				33C88BE412704BCC0017A933 /* hash.h */,
 				33C88BE512704BCC0017A933 /* map-util.h */,
 				33C88BE612704BCC0017A933 /* once.cc */,
@@ -679,9 +674,9 @@
 			productReference = 339A3AF912708A8C000A5714 /* libprotobuf-lite.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		C1F3460C1439B03000A10156 /* protobuff-lite-mac */ = {
+		C1F3460C1439B03000A10156 /* protobuf-lite-mac */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C1F346111439B03000A10156 /* Build configuration list for PBXNativeTarget "protobuff-lite-mac" */;
+			buildConfigurationList = C1F346111439B03000A10156 /* Build configuration list for PBXNativeTarget "protobuf-lite-mac" */;
 			buildPhases = (
 				C1F346091439B03000A10156 /* Sources */,
 				C1F3460A1439B03000A10156 /* Frameworks */,
@@ -691,9 +686,9 @@
 			);
 			dependencies = (
 			);
-			name = "protobuff-lite-mac";
+			name = "protobuf-lite-mac";
 			productName = "protobuff-lite-mac";
-			productReference = C1F3460D1439B03000A10156 /* libprotobuff-lite-mac.a */;
+			productReference = C1F3460D1439B03000A10156 /* libprotobuf-lite-mac.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 		D2AAC07D0554694100DB518D /* protobuf */ = {
@@ -738,7 +733,7 @@
 			targets = (
 				D2AAC07D0554694100DB518D /* protobuf */,
 				339A3AF812708A8C000A5714 /* protobuf-lite */,
-				C1F3460C1439B03000A10156 /* protobuff-lite-mac */,
+				C1F3460C1439B03000A10156 /* protobuf-lite-mac */,
 			);
 		};
 /* End PBXProject section */
@@ -750,7 +745,6 @@
 			files = (
 				339A3B0612708AAE000A5714 /* common.cc in Sources */,
 				339A3B0712708ABB000A5714 /* once.cc in Sources */,
-				339A3B0912708B18000A5714 /* hash.cc in Sources */,
 				339A3B0D12708B30000A5714 /* extension_set.cc in Sources */,
 				339A3B0F12708B3A000A5714 /* generated_message_util.cc in Sources */,
 				339A3B1012708B44000A5714 /* message_lite.cc in Sources */,
@@ -768,7 +762,6 @@
 			files = (
 				C11B0B631439B43700818DC3 /* common.cc in Sources */,
 				C11B0B651439B43E00818DC3 /* once.cc in Sources */,
-				C11B0B661439B44700818DC3 /* hash.cc in Sources */,
 				C11B0B671439B46600818DC3 /* generated_message_util.cc in Sources */,
 				C11B0B681439B48000818DC3 /* message_lite.cc in Sources */,
 				C11B0B691439B48D00818DC3 /* repeated_field.cc in Sources */,
@@ -791,7 +784,6 @@
 				339A3B9112719CC9000A5714 /* generated_message_util.cc in Sources */,
 				339A3B9312719CC9000A5714 /* wire_format_lite.cc in Sources */,
 				339A3B9412719CC9000A5714 /* zero_copy_stream.cc in Sources */,
-				339A3B9512719CC9000A5714 /* hash.cc in Sources */,
 				339A3B9612719CC9000A5714 /* repeated_field.cc in Sources */,
 				339A3B9812719CC9000A5714 /* common.cc in Sources */,
 				339A3B9912719CC9000A5714 /* coded_stream.cc in Sources */,
@@ -870,6 +862,7 @@
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
 				USER_HEADER_SEARCH_PATHS = ../;
 			};
 			name = Debug;
@@ -892,6 +885,7 @@
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
 				USER_HEADER_SEARCH_PATHS = ../;
 			};
 			name = Release;
@@ -904,7 +898,6 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				PRODUCT_NAME = "protobuf-lite";
-				SKIP_INSTALL = YES;
 			};
 			name = Debug;
 		};
@@ -915,7 +908,6 @@
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				PRODUCT_NAME = "protobuf-lite";
-				SKIP_INSTALL = YES;
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -938,6 +930,7 @@
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
 				USER_HEADER_SEARCH_PATHS = ../;
 			};
 			name = Distribution;
@@ -962,7 +955,6 @@
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				PRODUCT_NAME = "protobuf-lite";
-				SKIP_INSTALL = YES;
 				ZERO_LINK = NO;
 			};
 			name = Distribution;
@@ -1063,7 +1055,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C1F346111439B03000A10156 /* Build configuration list for PBXNativeTarget "protobuff-lite-mac" */ = {
+		C1F346111439B03000A10156 /* Build configuration list for PBXNativeTarget "protobuf-lite-mac" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C1F3460E1439B03000A10156 /* Debug */,
