@@ -29,11 +29,12 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Author: kenton@google.com (Kenton Varda)
+// Author: jonp@google.com (Jon Perlow)
 //  Based on original Protocol Buffers design by
 //  Sanjay Ghemawat, Jeff Dean, and others.
 
-#ifndef GOOGLE_PROTOBUF_COMPILER_JAVA_ENUM_FIELD_H__
-#define GOOGLE_PROTOBUF_COMPILER_JAVA_ENUM_FIELD_H__
+#ifndef GOOGLE_PROTOBUF_COMPILER_JAVA_STRING_FIELD_H__
+#define GOOGLE_PROTOBUF_COMPILER_JAVA_STRING_FIELD_H__
 
 #include <map>
 #include <string>
@@ -44,11 +45,11 @@ namespace protobuf {
 namespace compiler {
 namespace java {
 
-class EnumFieldGenerator : public FieldGenerator {
+class StringFieldGenerator : public FieldGenerator {
  public:
-  explicit EnumFieldGenerator(const FieldDescriptor* descriptor,
+  explicit StringFieldGenerator(const FieldDescriptor* descriptor,
       int messageBitIndex, int builderBitIndex);
-  ~EnumFieldGenerator();
+  ~StringFieldGenerator();
 
   // implements FieldGenerator ---------------------------------------
   int GetNumBitsForMessage() const;
@@ -66,7 +67,6 @@ class EnumFieldGenerator : public FieldGenerator {
   void GenerateFieldBuilderInitializationCode(io::Printer* printer) const;
   void GenerateEqualsCode(io::Printer* printer) const;
   void GenerateHashCode(io::Printer* printer) const;
-
   string GetBoxedType() const;
 
  private:
@@ -75,14 +75,14 @@ class EnumFieldGenerator : public FieldGenerator {
   const int messageBitIndex_;
   const int builderBitIndex_;
 
-  GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(EnumFieldGenerator);
+  GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(StringFieldGenerator);
 };
 
-class RepeatedEnumFieldGenerator : public FieldGenerator {
+class RepeatedStringFieldGenerator : public FieldGenerator {
  public:
-  explicit RepeatedEnumFieldGenerator(const FieldDescriptor* descriptor,
+  explicit RepeatedStringFieldGenerator(const FieldDescriptor* descriptor,
       int messageBitIndex, int builderBitIndex);
-  ~RepeatedEnumFieldGenerator();
+  ~RepeatedStringFieldGenerator();
 
   // implements FieldGenerator ---------------------------------------
   int GetNumBitsForMessage() const;
@@ -101,7 +101,6 @@ class RepeatedEnumFieldGenerator : public FieldGenerator {
   void GenerateFieldBuilderInitializationCode(io::Printer* printer) const;
   void GenerateEqualsCode(io::Printer* printer) const;
   void GenerateHashCode(io::Printer* printer) const;
-
   string GetBoxedType() const;
 
  private:
@@ -110,7 +109,7 @@ class RepeatedEnumFieldGenerator : public FieldGenerator {
   const int messageBitIndex_;
   const int builderBitIndex_;
 
-  GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(RepeatedEnumFieldGenerator);
+  GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(RepeatedStringFieldGenerator);
 };
 
 }  // namespace java
@@ -118,4 +117,4 @@ class RepeatedEnumFieldGenerator : public FieldGenerator {
 }  // namespace protobuf
 
 }  // namespace google
-#endif  // GOOGLE_PROTOBUF_COMPILER_JAVA_ENUM_FIELD_H__
+#endif  // GOOGLE_PROTOBUF_COMPILER_JAVA_STRING_FIELD_H__
