@@ -19,6 +19,10 @@ bool parseStyleString(const char *str, ProtoSVGElementGradient_GradientStop *sto
         
         char *curPart = nil;
         int curLen = nextPart-str;
+        
+        if (!nextPart)
+            return true;
+        
         if(nextPart)
         {
             curLen = nextPart-str;
@@ -69,7 +73,7 @@ bool parseGradientSteps(ProtoSVGElementGradient *gradient,TBXMLElement *element)
             __block ProtoSVGElementGradient_GradientStop *stop = gradient->add_stops();
             enumAttributes(child, true, ^bool(TBXMLAttribute *attribute) 
                            {
-                               dbgLog(@"Warning : uknown param in gradient stop %@",attribute->name);
+                               dbgLog(@"Warning : uknown param in gradient stop %s", attribute->name);
                                return true;
                            },
                            "offset", ^bool(TBXMLAttribute *attribute) 
@@ -81,7 +85,7 @@ bool parseGradientSteps(ProtoSVGElementGradient *gradient,TBXMLElement *element)
                            {
                                if(!parseStyleString(attribute->value,stop))
                                {
-                                   dbgLog(@"Error in gradient style unknown: %s",attribute->value);
+                                   dbgLog(@"Error in gradient style unknown: %s", attribute->value);
                                    success = false;
                                }
                                return true;

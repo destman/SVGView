@@ -71,9 +71,9 @@ int main (int argc, const char * argv[])
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
         dbg_log("Opening XML");
         TBXML *xml = [[TBXML alloc] initWithURL:[NSURL fileURLWithPath:[NSString stringWithUTF8String:argv[1]]]];
-        if(!xml)
+        if(!xml || !xml.rootXMLElement)
         {
-            printf("Failed to open svg file %s\n",argv[1]);
+            printf("Failed to open svg file %s\n", argv[1]);
             return 2;
         }
 
