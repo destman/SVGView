@@ -455,14 +455,31 @@ void SVGRender::draw(CGContextRef context, CGSize size)
     CGContextConcatCTM(context, transform);
     prepareToDraw(context, &_root.params());
     
+    __block bool needRestore = NO;
+    
     enumElements(^(const ProtoSVGElement *object) 
-    {
-        if(object->has_path())
-        {
-            drawPath(context,&object->path());
-        }
-        return true;
-    });
+                 {
+                     const ProtoSVGGeneralParams *params = &object->group();
+
+                     if (params) {
+                         needRestore |= prepareToDraw(context, params);
+                     }
+                     
+                     if(object->has_path())
+                     {
+                         drawPath(context,&object->path());
+                     }
+  
+                     return true;
+                 }, ^(const ProtoSVGElement *object) 
+                 {
+                     if(needRestore)
+                     {
+                         CGContextRestoreGState(context);
+                         needRestore = NO;
+                     } 
+                     return true;
+                 });
     CGContextRestoreGState(context);
 }    
 
@@ -519,6 +536,7 @@ UIImage *SVGRender::createUIImage(CGSize size, double scale)
 
     CGImageRelease(cgImage);
     CGContextRelease(context);
+    CGColorSpaceRelease(colorSpace);
     return rv;
 }
 
@@ -576,7 +594,7 @@ bool SVGRender::isPointInside(CGPoint point, CGSize size)
             }
         }        
         return true;
-    });
+    }, nil);
     return rv;
 }
 
@@ -624,7 +642,7 @@ set<int>  SVGRender::statesAtPoint(CGPoint point, CGSize size,bool activeOnly)
             }
         }        
         return true;
-    });
+    }, nil);
     
     if(!activeOnly)
     {
@@ -644,14 +662,19 @@ set<int>  SVGRender::statesAtPoint(CGPoint point, CGSize size,bool activeOnly)
 
 
 
-bool SVGRender::enumElements(SVGRenderEnumBlock enumBlock,const ProtoSVGElement *object, bool onlyActive)
+bool SVGRender::enumElements(SVGRenderEnumBlock enumEnterBlock, 
+                             SVGRenderEnumBlock enumExitBlock, 
+                             const ProtoSVGElement *object, 
+                             bool onlyActive)
 {
-    enumBlock(object);
+    if (enumEnterBlock)
+        enumEnterBlock(object);
+    
     if(object->has_defs() && !onlyActive)
     {
         for (int i=0; i<object->defs().childs_size();i++)
         {
-            if(!enumElements(enumBlock, &object->defs().childs(i),onlyActive))
+            if(!enumElements(enumEnterBlock, enumExitBlock, &object->defs().childs(i),onlyActive))
             {
                 return false;
             }            
@@ -661,20 +684,23 @@ bool SVGRender::enumElements(SVGRenderEnumBlock enumBlock,const ProtoSVGElement 
     {
         for (int i=0; i<object->group().childs_size();i++)
         {
-            if(!enumElements(enumBlock, &object->group().childs(i),onlyActive))
+            if(!enumElements(enumEnterBlock, enumExitBlock, &object->group().childs(i),onlyActive))
             {
                 return false;
             }            
         }
-    }    
+    }
+    if (enumExitBlock)
+        enumExitBlock(object);
     return true;
 }
 
-void SVGRender::enumElements(SVGRenderEnumBlock enumBlock,bool onlyActive)
+void SVGRender::enumElements(SVGRenderEnumBlock enumEnterBlock, 
+                             SVGRenderEnumBlock enumExitBlock, bool onlyActive)
 {
     for (int i=0; i<_root.params().childs_size();i++)
     {
-        if(!enumElements(enumBlock, &_root.params().childs(i),onlyActive))
+        if(!enumElements(enumEnterBlock, enumExitBlock, &_root.params().childs(i),onlyActive))
         {
             break;
         }

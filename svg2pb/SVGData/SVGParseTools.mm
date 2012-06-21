@@ -68,6 +68,15 @@ bool    parseMatrixString(ProtoAffineTransformMatrix *matrix, const char *data)
             matrix->set_ty(vals[5]);
             return true;
         }
+    }else if(strncmp("translate(", data, 10)==0)
+    {
+        double vals[2];
+        if(parseNumbers(data+10, 2, vals, &data))
+        {
+            matrix->set_tx(vals[0]);
+            matrix->set_ty(vals[1]);
+            return true;
+        }
     }else
     {
         dbgLog(@"Error loading svg: Transfrom not supported %s",data);

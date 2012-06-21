@@ -27,8 +27,10 @@
 -(void) viewDidLoad
 {
     [super viewDidLoad];
-    testView.svgFile   = [[NSBundle mainBundle] pathForResource:@"main_bg.svgpb" ofType:@""];
+    NSString *iconPath = [[NSBundle mainBundle] pathForResource:@"test.svgpb" ofType:@""];
+    testView.svgFile   = iconPath;
     testButton.svgFile = [[NSBundle mainBundle] pathForResource:@"btn_test.svgpb" ofType:@""];
+    imageView.image = [SVGView imageWithSize:CGSizeMake(160, 200) fromSVGFile:iconPath];
 }
 
 

@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		33157A8C1541AB34004FA4DD /* libprotobuff-lite-mac.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C14D55E4153D6F0900E37F56 /* libprotobuff-lite-mac.a */; };
+		330E31521593307800112ABE /* test.svg in Resources */ = {isa = PBXBuildFile; fileRef = 330E31511593307800112ABE /* test.svg */; };
+		33157A8C1541AB34004FA4DD /* libprotobuf-lite-mac.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C14D55E4153D6F0900E37F56 /* libprotobuf-lite-mac.a */; };
 		33157AAF1541AE58004FA4DD /* libprotobuf-lite.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C14D55E2153D6F0900E37F56 /* libprotobuf-lite.a */; };
 		C14D5595153D5C6B00E37F56 /* Logger.mm in Sources */ = {isa = PBXBuildFile; fileRef = C14D5594153D5C6B00E37F56 /* Logger.mm */; };
 		C14D5596153D5C6B00E37F56 /* Logger.mm in Sources */ = {isa = PBXBuildFile; fileRef = C14D5594153D5C6B00E37F56 /* Logger.mm */; };
@@ -113,6 +114,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		330E31511593307800112ABE /* test.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = test.svg; sourceTree = "<group>"; };
 		C14D5593153D5C6B00E37F56 /* Logger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Logger.h; sourceTree = "<group>"; };
 		C14D5594153D5C6B00E37F56 /* Logger.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Logger.mm; sourceTree = "<group>"; };
 		C14D55BA153D608E00E37F56 /* PBFileStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PBFileStream.cpp; sourceTree = "<group>"; };
@@ -146,7 +148,6 @@
 		C1D0669714D8241000802591 /* SVGRender.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SVGRender.mm; sourceTree = "<group>"; };
 		C1D0669914D8242300802591 /* SVGRender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVGRender.h; sourceTree = "<group>"; };
 		C1D0669A14D8269900802591 /* main_bg.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = main_bg.svg; sourceTree = "<group>"; };
-		C1E35E5214BF1F7100FB2589 /* test.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = test.svg; sourceTree = "<group>"; };
 		C1F72759141F6E8000CE8C94 /* SVGGeneralParams.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVGGeneralParams.h; sourceTree = "<group>"; };
 		C1F7275A141F6E8000CE8C94 /* SVGGeneralParams.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SVGGeneralParams.mm; sourceTree = "<group>"; };
 		C1F7275B141F6E8000CE8C94 /* SVGRoot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVGRoot.h; sourceTree = "<group>"; };
@@ -165,7 +166,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				33157A8C1541AB34004FA4DD /* libprotobuff-lite-mac.a in Frameworks */,
+				33157A8C1541AB34004FA4DD /* libprotobuf-lite-mac.a in Frameworks */,
 				C1AFE63F141F6C6E0092FF0C /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -202,7 +203,7 @@
 			children = (
 				C14D55E0153D6F0900E37F56 /* libprotobuf.a */,
 				C14D55E2153D6F0900E37F56 /* libprotobuf-lite.a */,
-				C14D55E4153D6F0900E37F56 /* libprotobuff-lite-mac.a */,
+				C14D55E4153D6F0900E37F56 /* libprotobuf-lite-mac.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -225,7 +226,6 @@
 			isa = PBXGroup;
 			children = (
 				C1F72758141F6E8000CE8C94 /* SVGData */,
-				C1E35E5214BF1F7100FB2589 /* test.svg */,
 				C1AFE5DD141F61760092FF0C /* main.mm */,
 				C1F7276D141F6ECF00CE8C94 /* svg2pb-Prefix.pch */,
 			);
@@ -286,6 +286,7 @@
 				C1D0665814D81FCA00802591 /* SVGViewTest-Prefix.pch */,
 				C1D0665214D81FCA00802591 /* SVGViewTest-Info.plist */,
 				C1D0665614D81FCA00802591 /* main.m */,
+				330E31511593307800112ABE /* test.svg */,
 				C1D0668414D8228500802591 /* btn_test.svg */,
 				C1D0669A14D8269900802591 /* main_bg.svg */,
 			);
@@ -403,10 +404,10 @@
 			remoteRef = C14D55E1153D6F0900E37F56 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		C14D55E4153D6F0900E37F56 /* libprotobuff-lite-mac.a */ = {
+		C14D55E4153D6F0900E37F56 /* libprotobuf-lite-mac.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = "libprotobuff-lite-mac.a";
+			path = "libprotobuf-lite-mac.a";
 			remoteRef = C14D55E3153D6F0900E37F56 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -420,6 +421,7 @@
 				C1D0667114D8219500802591 /* TestViewController.xib in Resources */,
 				C1D0668514D8228500802591 /* btn_test.svg in Resources */,
 				C1D0669B14D8269900802591 /* main_bg.svg in Resources */,
+				330E31521593307800112ABE /* test.svg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -428,7 +430,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		C13535ED142A1A7100C211D2 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 12;
+			buildActionMask = 8;
 			files = (
 			);
 			inputPaths = (
@@ -437,7 +439,7 @@
 			outputPaths = (
 				"$(INSTALL_PATH)/$(EXECUTABLE_NAME)",
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/bash;
 			shellScript = "osascript -e \"do shell script \\\"cp $TARGET_BUILD_DIR/$EXECUTABLE_NAME $INSTALL_PATH/$EXECUTABLE_NAME\\\" with administrator privileges\"\n\n";
 		};
