@@ -10,6 +10,9 @@
 		330E31521593307800112ABE /* test.svg in Resources */ = {isa = PBXBuildFile; fileRef = 330E31511593307800112ABE /* test.svg */; };
 		33157A8C1541AB34004FA4DD /* libprotobuf-lite-mac.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C14D55E4153D6F0900E37F56 /* libprotobuf-lite-mac.a */; };
 		33157AAF1541AE58004FA4DD /* libprotobuf-lite.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C14D55E2153D6F0900E37F56 /* libprotobuf-lite.a */; };
+		33222DD0161207EF00C3CCCC /* arrow.svg in Resources */ = {isa = PBXBuildFile; fileRef = 33222DCF161207EF00C3CCCC /* arrow.svg */; };
+		33C2749E1615B6310074A317 /* arrow_gray.svg in Resources */ = {isa = PBXBuildFile; fileRef = 33C2749D1615B6310074A317 /* arrow_gray.svg */; };
+		33C274AB1615BA060074A317 /* circle_gray.svg in Resources */ = {isa = PBXBuildFile; fileRef = 33C274AA1615BA060074A317 /* circle_gray.svg */; };
 		C14D5595153D5C6B00E37F56 /* Logger.mm in Sources */ = {isa = PBXBuildFile; fileRef = C14D5594153D5C6B00E37F56 /* Logger.mm */; };
 		C14D5596153D5C6B00E37F56 /* Logger.mm in Sources */ = {isa = PBXBuildFile; fileRef = C14D5594153D5C6B00E37F56 /* Logger.mm */; };
 		C14D5597153D5DD100E37F56 /* SVGView.mm in Sources */ = {isa = PBXBuildFile; fileRef = C15330E413FBD41F000CECC0 /* SVGView.mm */; };
@@ -115,6 +118,9 @@
 
 /* Begin PBXFileReference section */
 		330E31511593307800112ABE /* test.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = test.svg; sourceTree = "<group>"; };
+		33222DCF161207EF00C3CCCC /* arrow.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = arrow.svg; sourceTree = "<group>"; };
+		33C2749D1615B6310074A317 /* arrow_gray.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = arrow_gray.svg; sourceTree = "<group>"; };
+		33C274AA1615BA060074A317 /* circle_gray.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = circle_gray.svg; sourceTree = "<group>"; };
 		C14D5593153D5C6B00E37F56 /* Logger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Logger.h; sourceTree = "<group>"; };
 		C14D5594153D5C6B00E37F56 /* Logger.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Logger.mm; sourceTree = "<group>"; };
 		C14D55BA153D608E00E37F56 /* PBFileStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PBFileStream.cpp; sourceTree = "<group>"; };
@@ -286,6 +292,9 @@
 				C1D0665814D81FCA00802591 /* SVGViewTest-Prefix.pch */,
 				C1D0665214D81FCA00802591 /* SVGViewTest-Info.plist */,
 				C1D0665614D81FCA00802591 /* main.m */,
+				33C2749D1615B6310074A317 /* arrow_gray.svg */,
+				33C274AA1615BA060074A317 /* circle_gray.svg */,
+				33222DCF161207EF00C3CCCC /* arrow.svg */,
 				330E31511593307800112ABE /* test.svg */,
 				C1D0668414D8228500802591 /* btn_test.svg */,
 				C1D0669A14D8269900802591 /* main_bg.svg */,
@@ -422,6 +431,9 @@
 				C1D0668514D8228500802591 /* btn_test.svg in Resources */,
 				C1D0669B14D8269900802591 /* main_bg.svg in Resources */,
 				330E31521593307800112ABE /* test.svg in Resources */,
+				33222DD0161207EF00C3CCCC /* arrow.svg in Resources */,
+				33C2749E1615B6310074A317 /* arrow_gray.svg in Resources */,
+				33C274AB1615BA060074A317 /* circle_gray.svg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -450,8 +462,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C1AFE5DE141F61760092FF0C /* main.mm in Sources */,
 				C1AFE5F8141F62F90092FF0C /* svg.proto in Sources */,
+				C1AFE5DE141F61760092FF0C /* main.mm in Sources */,
 				C1F72765141F6E8000CE8C94 /* SVGGeneralParams.mm in Sources */,
 				C1F72766141F6E8000CE8C94 /* SVGRoot.mm in Sources */,
 				C1F72767141F6E8000CE8C94 /* SVGGradient.mm in Sources */,

@@ -18,11 +18,7 @@ bool parseStyleString(const char *str, ProtoSVGElementGradient_GradientStop *sto
         char *nextPart = strstr(str, ";");
         
         char *curPart = nil;
-        int curLen = nextPart-str;
-        
-        if (!nextPart)
-            return true;
-        
+        int curLen;
         if(nextPart)
         {
             curLen = nextPart-str;
@@ -30,6 +26,7 @@ bool parseStyleString(const char *str, ProtoSVGElementGradient_GradientStop *sto
         {
             curLen = strlen(str);
         }
+        
         curPart = (char *)malloc(curLen+1);
         memcpy(curPart, str, curLen);
         curPart[curLen] = 0;
@@ -190,6 +187,16 @@ bool SVGGradient_ParseRadialGradientFromXML(ProtoSVGElementGradient *gradient,TB
                    "r",^bool(TBXMLAttribute *attribute) 
                    {
                        gradient->set_r(atof(attribute->value));
+                       return true;
+                   },
+                   "fx",^bool(TBXMLAttribute *attribute)
+                   {
+                       gradient->mutable_focuspoint()->set_x(atof(attribute->value));
+                       return true;
+                   },
+                   "fy",^bool(TBXMLAttribute *attribute)
+                   {
+                       gradient->mutable_focuspoint()->set_y(atof(attribute->value));
                        return true;
                    },
                    "gradientTransform",^bool(TBXMLAttribute *attribute) 

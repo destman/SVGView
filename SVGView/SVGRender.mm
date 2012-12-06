@@ -318,7 +318,7 @@ void SVGRender::drawPath(CGContextRef context,const ProtoSVGElementPath *pathObj
                         if(fillGradient->has_gradienttransform())
                         {
                             const ProtoAffineTransformMatrix *t = &fillGradient->gradienttransform();
-                            CGAffineTransform transform = CGAffineTransformMake(t->a(), t->b(), t->c(), t->d(), t->tx(), t->ty());                                
+                            CGAffineTransform transform = CGAffineTransformMake(t->a(), t->b(), t->c(), t->d(), t->tx(), t->ty());
                             CGContextConcatCTM(context, transform);
                         }
                         if(fillGradient->has_startpoint() && fillGradient->has_endpoint())
@@ -330,8 +330,19 @@ void SVGRender::drawPath(CGContextRef context,const ProtoSVGElementPath *pathObj
                         {
                             CGPoint center  = CGPointMake(fillGradient->center().x(), fillGradient->center().y());
                             float   r = fillGradient->r();
-                            CGContextDrawRadialGradient(context, gradient, center, 0, center, r, kCGGradientDrawsBeforeStartLocation|kCGGradientDrawsAfterEndLocation);
-                        }                                
+                            
+                            if(fillGradient->has_focuspoint())
+                            {
+                                CGPoint focus  = CGPointMake(fillGradient->focuspoint().x(), fillGradient->focuspoint().y());
+                                CGContextDrawRadialGradient(context, gradient, focus, 0, center, r, kCGGradientDrawsBeforeStartLocation|kCGGradientDrawsAfterEndLocation);
+                                
+                            }else
+                            {
+                                CGContextDrawRadialGradient(context, gradient, center, 0, center, r, kCGGradientDrawsBeforeStartLocation|kCGGradientDrawsAfterEndLocation);
+                                
+                            }
+                            
+                        }
                     }
                 }else
                 {
