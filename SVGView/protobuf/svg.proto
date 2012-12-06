@@ -56,6 +56,7 @@ message ProtoSVGPaint
     optional string     ref_id    = 2;
     optional bool       paint_off = 3;
     optional bool       odd       = 4 [default = false];
+    optional float      stroke_width = 5 [default = 1];
 };
 
 message ProtoSVGGeneralParams
@@ -84,6 +85,7 @@ message ProtoSVGElementGradient
     optional ProtoPoint                 endPoint            = 6;
     optional ProtoPoint                 center              = 7;
     optional float                      r                   = 8;
+    optional ProtoPoint                 focusPoint          = 9;
 }
 
 

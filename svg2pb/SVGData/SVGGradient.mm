@@ -18,7 +18,7 @@ bool parseStyleString(const char *str, ProtoSVGElementGradient_GradientStop *sto
         char *nextPart = strstr(str, ";");
         
         char *curPart = nil;
-        int curLen = nextPart-str;
+        int curLen;
         if(nextPart)
         {
             curLen = nextPart-str;
@@ -26,6 +26,7 @@ bool parseStyleString(const char *str, ProtoSVGElementGradient_GradientStop *sto
         {
             curLen = strlen(str);
         }
+        
         curPart = (char *)malloc(curLen+1);
         memcpy(curPart, str, curLen);
         curPart[curLen] = 0;
@@ -69,7 +70,7 @@ bool parseGradientSteps(ProtoSVGElementGradient *gradient,TBXMLElement *element)
             __block ProtoSVGElementGradient_GradientStop *stop = gradient->add_stops();
             enumAttributes(child, true, ^bool(TBXMLAttribute *attribute) 
                            {
-                               dbgLog(@"Warning : uknown param in gradient stop %@",attribute->name);
+                               dbgLog(@"Warning : uknown param in gradient stop %s", attribute->name);
                                return true;
                            },
                            "offset", ^bool(TBXMLAttribute *attribute) 
@@ -81,7 +82,7 @@ bool parseGradientSteps(ProtoSVGElementGradient *gradient,TBXMLElement *element)
                            {
                                if(!parseStyleString(attribute->value,stop))
                                {
-                                   dbgLog(@"Error in gradient style unknown: %s",attribute->value);
+                                   dbgLog(@"Error in gradient style unknown: %s", attribute->value);
                                    success = false;
                                }
                                return true;
@@ -186,6 +187,16 @@ bool SVGGradient_ParseRadialGradientFromXML(ProtoSVGElementGradient *gradient,TB
                    "r",^bool(TBXMLAttribute *attribute) 
                    {
                        gradient->set_r(atof(attribute->value));
+                       return true;
+                   },
+                   "fx",^bool(TBXMLAttribute *attribute)
+                   {
+                       gradient->mutable_focuspoint()->set_x(atof(attribute->value));
+                       return true;
+                   },
+                   "fy",^bool(TBXMLAttribute *attribute)
+                   {
+                       gradient->mutable_focuspoint()->set_y(atof(attribute->value));
                        return true;
                    },
                    "gradientTransform",^bool(TBXMLAttribute *attribute) 

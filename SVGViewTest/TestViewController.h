@@ -13,6 +13,7 @@
 {
     IBOutlet  SVGView *testView;
     IBOutlet  SVGButton *testButton;
+    IBOutlet  UIImageView *imageView;
 }
 
 @end

@@ -29,13 +29,14 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Author: kenton@google.com (Kenton Varda)
+// Author: jonp@google.com (Jon Perlow)
 //  Based on original Protocol Buffers design by
 //  Sanjay Ghemawat, Jeff Dean, and others.
 
 #include <map>
 #include <string>
 
-#include <google/protobuf/compiler/java/java_enum_field.h>
+#include <google/protobuf/compiler/java/java_string_field.h>
 #include <google/protobuf/stubs/common.h>
 #include <google/protobuf/compiler/java/java_helpers.h>
 #include <google/protobuf/io/printer.h>
@@ -47,25 +48,34 @@ namespace protobuf {
 namespace compiler {
 namespace java {
 
+using internal::WireFormat;
+using internal::WireFormatLite;
+
 namespace {
 
-// TODO(kenton):  Factor out a "SetCommonFieldVariables()" to get rid of
-//   repeat code between this and the other field types.
-void SetEnumVariables(const FieldDescriptor* descriptor,
-                      int messageBitIndex,
-                      int builderBitIndex,
-                      map<string, string>* variables) {
+void SetPrimitiveVariables(const FieldDescriptor* descriptor,
+                           int messageBitIndex,
+                           int builderBitIndex,
+                           map<string, string>* variables) {
   (*variables)["name"] =
     UnderscoresToCamelCase(descriptor);
   (*variables)["capitalized_name"] =
     UnderscoresToCapitalizedCamelCase(descriptor);
   (*variables)["constant_name"] = FieldConstantName(descriptor);
   (*variables)["number"] = SimpleItoa(descriptor->number());
-  (*variables)["type"] = ClassName(descriptor->enum_type());
+  (*variables)["empty_list"] = "com.google.protobuf.LazyStringArrayList.EMPTY";
+
   (*variables)["default"] = DefaultValue(descriptor);
-  (*variables)["tag"] = SimpleItoa(internal::WireFormat::MakeTag(descriptor));
+  (*variables)["default_init"] = ("= " + DefaultValue(descriptor));
+  (*variables)["capitalized_type"] = "String";
+  (*variables)["tag"] = SimpleItoa(WireFormat::MakeTag(descriptor));
   (*variables)["tag_size"] = SimpleItoa(
-      internal::WireFormat::TagSize(descriptor->number(), GetType(descriptor)));
+      WireFormat::TagSize(descriptor->number(), GetType(descriptor)));
+  (*variables)["null_check"] =
+      "  if (value == null) {\n"
+      "    throw new NullPointerException();\n"
+      "  }\n";
+
   // TODO(birdo): Add @deprecated javadoc when generating javadoc is supported
   // by the proto compiler
   (*variables)["deprecation"] = descriptor->options().deprecated()
@@ -96,89 +106,166 @@ void SetEnumVariables(const FieldDescriptor* descriptor,
 
 // ===================================================================
 
-EnumFieldGenerator::
-EnumFieldGenerator(const FieldDescriptor* descriptor,
-                      int messageBitIndex,
-                      int builderBitIndex)
+StringFieldGenerator::
+StringFieldGenerator(const FieldDescriptor* descriptor,
+                     int messageBitIndex,
+                     int builderBitIndex)
   : descriptor_(descriptor), messageBitIndex_(messageBitIndex),
     builderBitIndex_(builderBitIndex) {
-  SetEnumVariables(descriptor, messageBitIndex, builderBitIndex, &variables_);
+  SetPrimitiveVariables(descriptor, messageBitIndex, builderBitIndex,
+                        &variables_);
 }
 
-EnumFieldGenerator::~EnumFieldGenerator() {}
+StringFieldGenerator::~StringFieldGenerator() {}
 
-int EnumFieldGenerator::GetNumBitsForMessage() const {
+int StringFieldGenerator::GetNumBitsForMessage() const {
   return 1;
 }
 
-int EnumFieldGenerator::GetNumBitsForBuilder() const {
+int StringFieldGenerator::GetNumBitsForBuilder() const {
   return 1;
 }
 
-void EnumFieldGenerator::
+// A note about how strings are handled. This code used to just store a String
+// in the Message. This had two issues:
+//
+//  1. It wouldn't roundtrip byte arrays that were not vaid UTF-8 encoded
+//     strings, but rather fields that were raw bytes incorrectly marked
+//     as strings in the proto file. This is common because in the proto1
+//     syntax, string was the way to indicate bytes and C++ engineers can
+//     easily make this mistake without affecting the C++ API. By converting to
+//     strings immediately, some java code might corrupt these byte arrays as
+//     it passes through a java server even if the field was never accessed by
+//     application code.
+//
+//  2. There's a performance hit to converting between bytes and strings and
+//     it many cases, the field is never even read by the application code. This
+//     avoids unnecessary conversions in the common use cases.
+//
+// So now, the field for String is maintained as an Object reference which can
+// either store a String or a ByteString. The code uses an instanceof check
+// to see which one it has and converts to the other one if needed. It remembers
+// the last value requested (in a thread safe manner) as this is most likely
+// the one needed next. The thread safety is such that if two threads both
+// convert the field because the changes made by each thread were not visible to
+// the other, they may cause a conversion to happen more times than would
+// otherwise be necessary. This was deemed better than adding synchronization
+// overhead. It will not cause any corruption issues or affect the behavior of
+// the API. The instanceof check is also highly optimized in the JVM and we
+// decided it was better to reduce the memory overhead by not having two
+// separate fields but rather use dynamic type checking.
+//
+// For single fields, the logic for this is done inside the generated code. For
+// repeated fields, the logic is done in LazyStringArrayList and
+// UnmodifiableLazyStringList.
+void StringFieldGenerator::
 GenerateInterfaceMembers(io::Printer* printer) const {
   printer->Print(variables_,
     "$deprecation$boolean has$capitalized_name$();\n"
-    "$deprecation$$type$ get$capitalized_name$();\n");
+    "$deprecation$String get$capitalized_name$();\n");
 }
 
-void EnumFieldGenerator::
+void StringFieldGenerator::
 GenerateMembers(io::Printer* printer) const {
   printer->Print(variables_,
-    "private $type$ $name$_;\n"
+    "private java.lang.Object $name$_;\n"
     "$deprecation$public boolean has$capitalized_name$() {\n"
     "  return $get_has_field_bit_message$;\n"
+    "}\n");
+
+  printer->Print(variables_,
+    "$deprecation$public String get$capitalized_name$() {\n"
+    "  java.lang.Object ref = $name$_;\n"
+    "  if (ref instanceof String) {\n"
+    "    return (String) ref;\n"
+    "  } else {\n"
+    "    com.google.protobuf.ByteString bs = \n"
+    "        (com.google.protobuf.ByteString) ref;\n"
+    "    String s = bs.toStringUtf8();\n"
+    "    if (com.google.protobuf.Internal.isValidUtf8(bs)) {\n"
+    "      $name$_ = s;\n"
+    "    }\n"
+    "    return s;\n"
+    "  }\n"
     "}\n"
-    "$deprecation$public $type$ get$capitalized_name$() {\n"
-    "  return $name$_;\n"
+    "private com.google.protobuf.ByteString get$capitalized_name$Bytes() {\n"
+    "  java.lang.Object ref = $name$_;\n"
+    "  if (ref instanceof String) {\n"
+    "    com.google.protobuf.ByteString b = \n"
+    "        com.google.protobuf.ByteString.copyFromUtf8((String) ref);\n"
+    "    $name$_ = b;\n"
+    "    return b;\n"
+    "  } else {\n"
+    "    return (com.google.protobuf.ByteString) ref;\n"
+    "  }\n"
     "}\n");
 }
 
-void EnumFieldGenerator::
+void StringFieldGenerator::
 GenerateBuilderMembers(io::Printer* printer) const {
   printer->Print(variables_,
-    "private $type$ $name$_ = $default$;\n"
+    "private java.lang.Object $name$_ $default_init$;\n"
     "$deprecation$public boolean has$capitalized_name$() {\n"
     "  return $get_has_field_bit_builder$;\n"
-    "}\n"
-    "$deprecation$public $type$ get$capitalized_name$() {\n"
-    "  return $name$_;\n"
-    "}\n"
-    "$deprecation$public Builder set$capitalized_name$($type$ value) {\n"
-    "  if (value == null) {\n"
-    "    throw new NullPointerException();\n"
+    "}\n");
+
+  printer->Print(variables_,
+    "$deprecation$public String get$capitalized_name$() {\n"
+    "  java.lang.Object ref = $name$_;\n"
+    "  if (!(ref instanceof String)) {\n"
+    "    String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();\n"
+    "    $name$_ = s;\n"
+    "    return s;\n"
+    "  } else {\n"
+    "    return (String) ref;\n"
     "  }\n"
+    "}\n");
+
+  printer->Print(variables_,
+    "$deprecation$public Builder set$capitalized_name$(String value) {\n"
+    "$null_check$"
     "  $set_has_field_bit_builder$;\n"
     "  $name$_ = value;\n"
     "  $on_changed$\n"
     "  return this;\n"
     "}\n"
     "$deprecation$public Builder clear$capitalized_name$() {\n"
-    "  $clear_has_field_bit_builder$;\n"
-    "  $name$_ = $default$;\n"
+    "  $clear_has_field_bit_builder$;\n");
+  // The default value is not a simple literal so we want to avoid executing
+  // it multiple times.  Instead, get the default out of the default instance.
+  printer->Print(variables_,
+    "  $name$_ = getDefaultInstance().get$capitalized_name$();\n");
+  printer->Print(variables_,
     "  $on_changed$\n"
     "  return this;\n"
     "}\n");
+
+  printer->Print(variables_,
+    "void set$capitalized_name$(com.google.protobuf.ByteString value) {\n"
+    "  $set_has_field_bit_builder$;\n"
+    "  $name$_ = value;\n"
+    "  $on_changed$\n"
+    "}\n");
 }
 
-void EnumFieldGenerator::
+void StringFieldGenerator::
 GenerateFieldBuilderInitializationCode(io::Printer* printer)  const {
-  // noop for enums
+  // noop for primitives
 }
 
-void EnumFieldGenerator::
+void StringFieldGenerator::
 GenerateInitializationCode(io::Printer* printer) const {
   printer->Print(variables_, "$name$_ = $default$;\n");
 }
 
-void EnumFieldGenerator::
+void StringFieldGenerator::
 GenerateBuilderClearCode(io::Printer* printer) const {
   printer->Print(variables_,
-      "$name$_ = $default$;\n"
-      "$clear_has_field_bit_builder$;\n");
+    "$name$_ = $default$;\n"
+    "$clear_has_field_bit_builder$;\n");
 }
 
-void EnumFieldGenerator::
+void StringFieldGenerator::
 GenerateMergingCode(io::Printer* printer) const {
   printer->Print(variables_,
     "if (other.has$capitalized_name$()) {\n"
@@ -186,7 +273,7 @@ GenerateMergingCode(io::Printer* printer) const {
     "}\n");
 }
 
-void EnumFieldGenerator::
+void StringFieldGenerator::
 GenerateBuildingCode(io::Printer* printer) const {
   printer->Print(variables_,
     "if ($get_has_field_bit_from_local$) {\n"
@@ -195,198 +282,195 @@ GenerateBuildingCode(io::Printer* printer) const {
     "result.$name$_ = $name$_;\n");
 }
 
-void EnumFieldGenerator::
+void StringFieldGenerator::
 GenerateParsingCode(io::Printer* printer) const {
   printer->Print(variables_,
-    "int rawValue = input.readEnum();\n"
-    "$type$ value = $type$.valueOf(rawValue);\n");
-  if (HasUnknownFields(descriptor_->containing_type())) {
-    printer->Print(variables_,
-      "if (value == null) {\n"
-      "  unknownFields.mergeVarintField($number$, rawValue);\n"
-      "} else {\n");
-  } else {
-    printer->Print(variables_,
-      "if (value != null) {\n");
-  }
-  printer->Print(variables_,
-    "  $set_has_field_bit_builder$;\n"
-    "  $name$_ = value;\n"
-    "}\n");
+    "$set_has_field_bit_builder$;\n"
+    "$name$_ = input.readBytes();\n");
 }
 
-void EnumFieldGenerator::
+void StringFieldGenerator::
 GenerateSerializationCode(io::Printer* printer) const {
   printer->Print(variables_,
     "if ($get_has_field_bit_message$) {\n"
-    "  output.writeEnum($number$, $name$_.getNumber());\n"
+    "  output.writeBytes($number$, get$capitalized_name$Bytes());\n"
     "}\n");
 }
 
-void EnumFieldGenerator::
+void StringFieldGenerator::
 GenerateSerializedSizeCode(io::Printer* printer) const {
   printer->Print(variables_,
     "if ($get_has_field_bit_message$) {\n"
     "  size += com.google.protobuf.CodedOutputStream\n"
-    "    .computeEnumSize($number$, $name$_.getNumber());\n"
+    "    .computeBytesSize($number$, get$capitalized_name$Bytes());\n"
     "}\n");
 }
 
-void EnumFieldGenerator::
+void StringFieldGenerator::
 GenerateEqualsCode(io::Printer* printer) const {
   printer->Print(variables_,
-    "result = result &&\n"
-    "    (get$capitalized_name$() == other.get$capitalized_name$());\n");
+    "result = result && get$capitalized_name$()\n"
+    "    .equals(other.get$capitalized_name$());\n");
 }
 
-void EnumFieldGenerator::
+void StringFieldGenerator::
 GenerateHashCode(io::Printer* printer) const {
   printer->Print(variables_,
-    "hash = (37 * hash) + $constant_name$;\n"
-    "hash = (53 * hash) + hashEnum(get$capitalized_name$());\n");
+    "hash = (37 * hash) + $constant_name$;\n");
+  printer->Print(variables_,
+    "hash = (53 * hash) + get$capitalized_name$().hashCode();\n");
 }
 
-string EnumFieldGenerator::GetBoxedType() const {
-  return ClassName(descriptor_->enum_type());
+string StringFieldGenerator::GetBoxedType() const {
+  return "String";
 }
+
 
 // ===================================================================
 
-RepeatedEnumFieldGenerator::
-RepeatedEnumFieldGenerator(const FieldDescriptor* descriptor,
-                           int messageBitIndex,
-                           int builderBitIndex)
+RepeatedStringFieldGenerator::
+RepeatedStringFieldGenerator(const FieldDescriptor* descriptor,
+                             int messageBitIndex,
+                             int builderBitIndex)
   : descriptor_(descriptor), messageBitIndex_(messageBitIndex),
     builderBitIndex_(builderBitIndex) {
-  SetEnumVariables(descriptor, messageBitIndex, builderBitIndex, &variables_);
+  SetPrimitiveVariables(descriptor, messageBitIndex, builderBitIndex,
+                        &variables_);
 }
 
-RepeatedEnumFieldGenerator::~RepeatedEnumFieldGenerator() {}
+RepeatedStringFieldGenerator::~RepeatedStringFieldGenerator() {}
 
-int RepeatedEnumFieldGenerator::GetNumBitsForMessage() const {
+int RepeatedStringFieldGenerator::GetNumBitsForMessage() const {
   return 0;
 }
 
-int RepeatedEnumFieldGenerator::GetNumBitsForBuilder() const {
+int RepeatedStringFieldGenerator::GetNumBitsForBuilder() const {
   return 1;
 }
 
-void RepeatedEnumFieldGenerator::
+void RepeatedStringFieldGenerator::
 GenerateInterfaceMembers(io::Printer* printer) const {
   printer->Print(variables_,
-    "$deprecation$java.util.List<$type$> get$capitalized_name$List();\n"
+    "$deprecation$java.util.List<String> get$capitalized_name$List();\n"
     "$deprecation$int get$capitalized_name$Count();\n"
-    "$deprecation$$type$ get$capitalized_name$(int index);\n");
+    "$deprecation$String get$capitalized_name$(int index);\n");
 }
 
-void RepeatedEnumFieldGenerator::
+
+void RepeatedStringFieldGenerator::
 GenerateMembers(io::Printer* printer) const {
   printer->Print(variables_,
-    "private java.util.List<$type$> $name$_;\n"
-    "$deprecation$public java.util.List<$type$> get$capitalized_name$List() {\n"
+    "private com.google.protobuf.LazyStringList $name$_;\n"
+    "$deprecation$public java.util.List<String>\n"
+    "    get$capitalized_name$List() {\n"
     "  return $name$_;\n"   // note:  unmodifiable list
     "}\n"
     "$deprecation$public int get$capitalized_name$Count() {\n"
     "  return $name$_.size();\n"
     "}\n"
-    "$deprecation$public $type$ get$capitalized_name$(int index) {\n"
+    "$deprecation$public String get$capitalized_name$(int index) {\n"
     "  return $name$_.get(index);\n"
     "}\n");
 
   if (descriptor_->options().packed() &&
       HasGeneratedMethods(descriptor_->containing_type())) {
     printer->Print(variables_,
-      "private int $name$MemoizedSerializedSize;\n");
+      "private int $name$MemoizedSerializedSize = -1;\n");
   }
 }
 
-void RepeatedEnumFieldGenerator::
+void RepeatedStringFieldGenerator::
 GenerateBuilderMembers(io::Printer* printer) const {
+  // One field is the list and the bit field keeps track of whether the
+  // list is immutable. If it's immutable, the invariant is that it must
+  // either an instance of Collections.emptyList() or it's an ArrayList
+  // wrapped in a Collections.unmodifiableList() wrapper and nobody else has
+  // a refererence to the underlying ArrayList. This invariant allows us to
+  // share instances of lists between protocol buffers avoiding expensive
+  // memory allocations. Note, immutable is a strong guarantee here -- not
+  // just that the list cannot be modified via the reference but that the
+  // list can never be modified.
   printer->Print(variables_,
-    // One field is the list and the other field keeps track of whether the
-    // list is immutable. If it's immutable, the invariant is that it must
-    // either an instance of Collections.emptyList() or it's an ArrayList
-    // wrapped in a Collections.unmodifiableList() wrapper and nobody else has
-    // a refererence to the underlying ArrayList. This invariant allows us to
-    // share instances of lists between protocol buffers avoiding expensive
-    // memory allocations. Note, immutable is a strong guarantee here -- not
-    // just that the list cannot be modified via the reference but that the
-    // list can never be modified.
-    "private java.util.List<$type$> $name$_ =\n"
-    "  java.util.Collections.emptyList();\n"
+    "private com.google.protobuf.LazyStringList $name$_ = $empty_list$;\n");
 
+  printer->Print(variables_,
     "private void ensure$capitalized_name$IsMutable() {\n"
     "  if (!$get_mutable_bit_builder$) {\n"
-    "    $name$_ = new java.util.ArrayList<$type$>($name$_);\n"
+    "    $name$_ = new com.google.protobuf.LazyStringArrayList($name$_);\n"
     "    $set_mutable_bit_builder$;\n"
-    "  }\n"
-    "}\n"
+    "   }\n"
+    "}\n");
 
     // Note:  We return an unmodifiable list because otherwise the caller
     //   could hold on to the returned list and modify it after the message
     //   has been built, thus mutating the message which is supposed to be
     //   immutable.
-    "$deprecation$public java.util.List<$type$> get$capitalized_name$List() {\n"
+  printer->Print(variables_,
+    "$deprecation$public java.util.List<String>\n"
+    "    get$capitalized_name$List() {\n"
     "  return java.util.Collections.unmodifiableList($name$_);\n"
     "}\n"
     "$deprecation$public int get$capitalized_name$Count() {\n"
     "  return $name$_.size();\n"
     "}\n"
-    "$deprecation$public $type$ get$capitalized_name$(int index) {\n"
+    "$deprecation$public String get$capitalized_name$(int index) {\n"
     "  return $name$_.get(index);\n"
     "}\n"
     "$deprecation$public Builder set$capitalized_name$(\n"
-    "    int index, $type$ value) {\n"
-    "  if (value == null) {\n"
-    "    throw new NullPointerException();\n"
-    "  }\n"
+    "    int index, String value) {\n"
+    "$null_check$"
     "  ensure$capitalized_name$IsMutable();\n"
     "  $name$_.set(index, value);\n"
     "  $on_changed$\n"
     "  return this;\n"
     "}\n"
-    "$deprecation$public Builder add$capitalized_name$($type$ value) {\n"
-    "  if (value == null) {\n"
-    "    throw new NullPointerException();\n"
-    "  }\n"
+    "$deprecation$public Builder add$capitalized_name$(String value) {\n"
+    "$null_check$"
     "  ensure$capitalized_name$IsMutable();\n"
     "  $name$_.add(value);\n"
     "  $on_changed$\n"
     "  return this;\n"
     "}\n"
     "$deprecation$public Builder addAll$capitalized_name$(\n"
-    "    java.lang.Iterable<? extends $type$> values) {\n"
+    "    java.lang.Iterable<String> values) {\n"
     "  ensure$capitalized_name$IsMutable();\n"
     "  super.addAll(values, $name$_);\n"
     "  $on_changed$\n"
     "  return this;\n"
     "}\n"
     "$deprecation$public Builder clear$capitalized_name$() {\n"
-    "  $name$_ = java.util.Collections.emptyList();\n"
+    "  $name$_ = $empty_list$;\n"
     "  $clear_mutable_bit_builder$;\n"
     "  $on_changed$\n"
     "  return this;\n"
     "}\n");
+
+  printer->Print(variables_,
+    "void add$capitalized_name$(com.google.protobuf.ByteString value) {\n"
+    "  ensure$capitalized_name$IsMutable();\n"
+    "  $name$_.add(value);\n"
+    "  $on_changed$\n"
+    "}\n");
 }
 
-void RepeatedEnumFieldGenerator::
+void RepeatedStringFieldGenerator::
 GenerateFieldBuilderInitializationCode(io::Printer* printer)  const {
-  // noop for enums
+  // noop for primitives
 }
 
-void RepeatedEnumFieldGenerator::
+void RepeatedStringFieldGenerator::
 GenerateInitializationCode(io::Printer* printer) const {
-  printer->Print(variables_, "$name$_ = java.util.Collections.emptyList();\n");
+  printer->Print(variables_, "$name$_ = $empty_list$;\n");
 }
 
-void RepeatedEnumFieldGenerator::
+void RepeatedStringFieldGenerator::
 GenerateBuilderClearCode(io::Printer* printer) const {
   printer->Print(variables_,
-    "$name$_ = java.util.Collections.emptyList();\n"
+    "$name$_ = $empty_list$;\n"
     "$clear_mutable_bit_builder$;\n");
 }
 
-void RepeatedEnumFieldGenerator::
+void RepeatedStringFieldGenerator::
 GenerateMergingCode(io::Printer* printer) const {
   // The code below does two optimizations:
   //   1. If the other list is empty, there's nothing to do. This ensures we
@@ -406,57 +490,39 @@ GenerateMergingCode(io::Printer* printer) const {
     "}\n");
 }
 
-void RepeatedEnumFieldGenerator::
+void RepeatedStringFieldGenerator::
 GenerateBuildingCode(io::Printer* printer) const {
   // The code below ensures that the result has an immutable list. If our
   // list is immutable, we can just reuse it. If not, we make it immutable.
+
   printer->Print(variables_,
     "if ($get_mutable_bit_builder$) {\n"
-    "  $name$_ = java.util.Collections.unmodifiableList($name$_);\n"
+    "  $name$_ = new com.google.protobuf.UnmodifiableLazyStringList(\n"
+    "      $name$_);\n"
     "  $clear_mutable_bit_builder$;\n"
     "}\n"
     "result.$name$_ = $name$_;\n");
 }
 
-void RepeatedEnumFieldGenerator::
+void RepeatedStringFieldGenerator::
 GenerateParsingCode(io::Printer* printer) const {
-  // Read and store the enum
   printer->Print(variables_,
-    "int rawValue = input.readEnum();\n"
-    "$type$ value = $type$.valueOf(rawValue);\n");
-  if (HasUnknownFields(descriptor_->containing_type())) {
-    printer->Print(variables_,
-      "if (value == null) {\n"
-      "  unknownFields.mergeVarintField($number$, rawValue);\n"
-      "} else {\n");
-  } else {
-    printer->Print(variables_,
-      "if (value != null) {\n");
-  }
-  printer->Print(variables_,
-    "  add$capitalized_name$(value);\n"
-    "}\n");
+    "ensure$capitalized_name$IsMutable();\n"
+    "$name$_.add(input.readBytes());\n");
 }
 
-void RepeatedEnumFieldGenerator::
+void RepeatedStringFieldGenerator::
 GenerateParsingCodeFromPacked(io::Printer* printer) const {
-  // Wrap GenerateParsingCode's contents with a while loop.
-
   printer->Print(variables_,
     "int length = input.readRawVarint32();\n"
-    "int oldLimit = input.pushLimit(length);\n"
-    "while(input.getBytesUntilLimit() > 0) {\n");
-  printer->Indent();
-
-  GenerateParsingCode(printer);
-
-  printer->Outdent();
-  printer->Print(variables_,
+    "int limit = input.pushLimit(length);\n"
+    "while (input.getBytesUntilLimit() > 0) {\n"
+    "  add$capitalized_name$(input.read$capitalized_type$());\n"
     "}\n"
-    "input.popLimit(oldLimit);\n");
+    "input.popLimit(limit);\n");
 }
 
-void RepeatedEnumFieldGenerator::
+void RepeatedStringFieldGenerator::
 GenerateSerializationCode(io::Printer* printer) const {
   if (descriptor_->options().packed()) {
     printer->Print(variables_,
@@ -465,17 +531,17 @@ GenerateSerializationCode(io::Printer* printer) const {
       "  output.writeRawVarint32($name$MemoizedSerializedSize);\n"
       "}\n"
       "for (int i = 0; i < $name$_.size(); i++) {\n"
-      "  output.writeEnumNoTag($name$_.get(i).getNumber());\n"
+      "  output.write$capitalized_type$NoTag($name$_.get(i));\n"
       "}\n");
   } else {
     printer->Print(variables_,
       "for (int i = 0; i < $name$_.size(); i++) {\n"
-      "  output.writeEnum($number$, $name$_.get(i).getNumber());\n"
+      "  output.writeBytes($number$, $name$_.getByteString(i));\n"
       "}\n");
   }
 }
 
-void RepeatedEnumFieldGenerator::
+void RepeatedStringFieldGenerator::
 GenerateSerializedSizeCode(io::Printer* printer) const {
   printer->Print(variables_,
     "{\n"
@@ -485,20 +551,22 @@ GenerateSerializedSizeCode(io::Printer* printer) const {
   printer->Print(variables_,
     "for (int i = 0; i < $name$_.size(); i++) {\n"
     "  dataSize += com.google.protobuf.CodedOutputStream\n"
-    "    .computeEnumSizeNoTag($name$_.get(i).getNumber());\n"
+    "    .computeBytesSizeNoTag($name$_.getByteString(i));\n"
     "}\n");
+
   printer->Print(
-    "size += dataSize;\n");
+      "size += dataSize;\n");
+
   if (descriptor_->options().packed()) {
     printer->Print(variables_,
-      "if (!get$capitalized_name$List().isEmpty()) {"
+      "if (!get$capitalized_name$List().isEmpty()) {\n"
       "  size += $tag_size$;\n"
       "  size += com.google.protobuf.CodedOutputStream\n"
-      "    .computeRawVarint32Size(dataSize);\n"
-      "}");
+      "      .computeInt32SizeNoTag(dataSize);\n"
+      "}\n");
   } else {
     printer->Print(variables_,
-      "size += $tag_size$ * $name$_.size();\n");
+      "size += $tag_size$ * get$capitalized_name$List().size();\n");
   }
 
   // cache the data size for packed fields.
@@ -511,24 +579,24 @@ GenerateSerializedSizeCode(io::Printer* printer) const {
   printer->Print("}\n");
 }
 
-void RepeatedEnumFieldGenerator::
+void RepeatedStringFieldGenerator::
 GenerateEqualsCode(io::Printer* printer) const {
   printer->Print(variables_,
     "result = result && get$capitalized_name$List()\n"
     "    .equals(other.get$capitalized_name$List());\n");
 }
 
-void RepeatedEnumFieldGenerator::
+void RepeatedStringFieldGenerator::
 GenerateHashCode(io::Printer* printer) const {
   printer->Print(variables_,
     "if (get$capitalized_name$Count() > 0) {\n"
     "  hash = (37 * hash) + $constant_name$;\n"
-    "  hash = (53 * hash) + hashEnumList(get$capitalized_name$List());\n"
+    "  hash = (53 * hash) + get$capitalized_name$List().hashCode();\n"
     "}\n");
 }
 
-string RepeatedEnumFieldGenerator::GetBoxedType() const {
-  return ClassName(descriptor_->enum_type());
+string RepeatedStringFieldGenerator::GetBoxedType() const {
+  return "String";
 }
 
 }  // namespace java

@@ -34,7 +34,12 @@ bool SVGGeneralParams_ParseFromXML(ProtoSVGGeneralParams *params, TBXMLElement *
                            params->clear_stroke();
                        }
                        return true;
-                   },                   
+                   },
+                   "stroke-width",^bool(TBXMLAttribute *attribute)
+                   {
+                       params->mutable_stroke()->set_stroke_width(atof(attribute->value));
+                       return true;
+                   },
                    "fill-rule",^bool(TBXMLAttribute *attribute) 
                    {
                        if([[TBXML attributeValue:attribute] isEqualToString:@"evenodd"])

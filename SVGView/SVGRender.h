@@ -52,8 +52,8 @@ private:
     bool isGroupActive(const ProtoSVGGeneralParams *group);
 
     
-    bool enumElements(SVGRenderEnumBlock enumBlock,const ProtoSVGElement *object,bool onlyActive);
-    void enumElements(SVGRenderEnumBlock enumBlock,bool onlyActive=true);
+    bool enumElements(SVGRenderEnumBlock enumEnterBlock, SVGRenderEnumBlock enumExitBlock, const ProtoSVGElement *object, bool onlyActive);
+    void enumElements(SVGRenderEnumBlock enumEnterBlock, SVGRenderEnumBlock enumExitBlock, bool onlyActive=true);
 
     static set<int> statesFromName(const string &name);
 public:
