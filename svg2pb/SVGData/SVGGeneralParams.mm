@@ -71,6 +71,16 @@ bool SVGGeneralParams_ParseFromXML(ProtoSVGGeneralParams *params, TBXMLElement *
                        }
                        return true;
                    },
+                   "display",^bool(TBXMLAttribute *attribute)
+                   {
+                       //params->set_display(attribute->value);
+                       if ([[TBXML attributeValue:attribute] isEqualToString:@"none"]) {
+                           success = false;
+                           return false;
+                       }
+                       
+                       return true;
+                   },
                    0);    
     return success;
 }
