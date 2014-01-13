@@ -300,7 +300,7 @@ void SVGRender::drawPath(CGContextRef context,const ProtoSVGElementPath *pathObj
                 }                        
                 if(fill->has_color())
                 {
-                    CGFloat rgb[4] = {fill->color().r(),fill->color().g(),fill->color().b(), 1};
+                    CGFloat rgb[4] = {(CGFloat)fill->color().r(),(CGFloat)fill->color().g(),(CGFloat)fill->color().b(), 1};
                     rgb[0] /= 255;
                     rgb[1] /= 255;
                     rgb[2] /= 255;
@@ -381,13 +381,14 @@ void SVGRender::drawPath(CGContextRef context,const ProtoSVGElementPath *pathObj
                 {
                     CGContextSaveGState(context);
                     
-                    CGFloat rgb[4] = {stroke->color().r(),stroke->color().g(),stroke->color().b(), 1};
+                    CGFloat rgb[4] = {(CGFloat)stroke->color().r(),(CGFloat)stroke->color().g(),(CGFloat)stroke->color().b(), 1};
                     rgb[0] /= 255;
                     rgb[1] /= 255;
                     rgb[2] /= 255;
                     CGContextSetFillColorSpace(context, _colorSpace);
                     CGContextSetFillColor(context, rgb);
                     CGContextAddPath(context,path);
+                    CGContextSetLineWidth(context, stroke->stroke_width());
                     CGContextReplacePathWithStrokedPath(context);
                     CGContextDrawPath(context, mode);
                     
@@ -457,23 +458,26 @@ CGAffineTransform SVGRender::transformForSize(CGSize size)
     return rv;
 }
 
-void SVGRender::draw(CGContextRef context, CGSize size)
+void SVGRender::draw(CGContextRef context, CGSize size,  bool clearContext)
 {
     CGContextSaveGState(context);
-    CGContextClearRect(context, CGRectMake(0, 0, size.width, size.height));
+    if(clearContext)
+        CGContextClearRect(context, CGRectMake(0, 0, size.width, size.height));
     
     CGAffineTransform transform = transformForSize(size);
     CGContextConcatCTM(context, transform);
     prepareToDraw(context, &_root.params());
     
-    __block bool needRestore = NO;
+    __block set<const ProtoSVGElement *> needRestoreSet;
     
     enumElements(^(const ProtoSVGElement *object) 
                  {
                      const ProtoSVGGeneralParams *params = &object->group();
 
                      if (params) {
-                         needRestore |= prepareToDraw(context, params);
+                         bool needRestore = prepareToDraw(context, params);
+                         if (needRestore)
+                             needRestoreSet.insert(object);
                      }
                      
                      if(object->has_path())
@@ -484,10 +488,11 @@ void SVGRender::draw(CGContextRef context, CGSize size)
                      return true;
                  }, ^(const ProtoSVGElement *object) 
                  {
-                     if(needRestore)
+                     auto iter = needRestoreSet.find(object);
+                     if( iter != needRestoreSet.end() )
                      {
                          CGContextRestoreGState(context);
-                         needRestore = NO;
+                         needRestoreSet.erase(iter);
                      } 
                      return true;
                  });
@@ -533,21 +538,10 @@ UIImage *SVGRender::createUIImage(CGSize size, double scale)
     draw(context,size);
     CGImageRef cgImage = CGBitmapContextCreateImage(context);
     
+    UIImage *rv = [UIImage imageWithCGImage:cgImage scale:scale orientation:UIImageOrientationDownMirrored];
     
-    UIImage *rv = nil;
-    if([[UIDevice currentDevice].systemVersion hasPrefix:@"4."])
-    {
-        CGImageRef mirroredImage = MirrorImageDown(cgImage);
-        rv = [UIImage imageWithCGImage:mirroredImage scale:scale orientation:UIImageOrientationUp];
-        CGImageRelease(mirroredImage);
-    }else 
-    {
-        rv = [UIImage imageWithCGImage:cgImage scale:scale orientation:UIImageOrientationDownMirrored];
-    }
-
     CGImageRelease(cgImage);
     CGContextRelease(context);
-    CGColorSpaceRelease(colorSpace);
     return rv;
 }
 
@@ -716,6 +710,11 @@ void SVGRender::enumElements(SVGRenderEnumBlock enumEnterBlock,
             break;
         }
     }    
+}
+
+CGRect SVGRender::getRect()
+{
+    return CGRectMake(_root.frame().x(), _root.frame().y(), _root.frame().w(), _root.frame().h());
 }
 
 

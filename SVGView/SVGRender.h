@@ -78,7 +78,7 @@ public:
     /*!
      Draw svg at given context with given size
      */
-    void draw(CGContextRef context, CGSize size);
+    void draw(CGContextRef context, CGSize size,  bool clearContext=true);
     
     /*!
      Create UIImage with specified state and scale. It is safe to call this function from any thread.
@@ -102,6 +102,8 @@ public:
     bool isPointInside(CGPoint point, CGSize size);
     
     set<int>  statesAtPoint(CGPoint point, CGSize size, bool activeOnly=true);
+
+    CGRect getRect();
 };
 
 #endif
