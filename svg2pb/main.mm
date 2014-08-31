@@ -53,7 +53,7 @@ void printStructure(int level,const ProtoSVGGeneralParams *params)
 
 int main (int argc, const char * argv[])
 {
-    dbg_log("svg2pb v1.0\n");
+    dbg_log("svg2pb v1.1\n");
     
     if(argc!=3)
     {

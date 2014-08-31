@@ -87,7 +87,7 @@ bool SVGRender::openFile(const char *name)
             _allStates.insert(states.begin(),states.end());
         }
         return true;
-    },false);
+    },nullptr,false);
     return rv;
 }
 
@@ -252,7 +252,7 @@ const ProtoSVGElement *SVGRender::findElementById(const string &name)
             }
         }
         return true;
-    },false);
+    },nullptr,false);
     
     if(!rv)
     {
@@ -274,7 +274,7 @@ void SVGRender::prepareToDrawData()
             getCGPathForPath(&object->path());
         }        
         return true;
-    },false);
+    },nullptr,false);
 }
 
 void SVGRender::drawPath(CGContextRef context,const ProtoSVGElementPath *pathObject)

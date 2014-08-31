@@ -463,6 +463,8 @@ bool SVGPath_ParseLineFromXML(ProtoSVGElementPath *path,TBXMLElement *element)
         pt = path->add_points();
         pt->mutable_line_to()->set_x(x2);
         pt->mutable_line_to()->set_y(y2);
+        
+        ++nPathPoints_Line;
     }
     
     return success;

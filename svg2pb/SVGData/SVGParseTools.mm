@@ -179,8 +179,8 @@ bool    parseColorString(ProtoColor    *color, const char *val)
     int len = strlen(val);
     if(*val=='#' && len==7)
     {
-        unsigned char bgr[3];
-        (*(long *)(bgr))=strtol(val+1, nil, 16);
+        long l = strtol(val+1, nil, 16);
+        unsigned char *bgr = (unsigned char *)&l;
         color->set_r(bgr[2]);
         color->set_g(bgr[1]);
         color->set_b(bgr[0]);
