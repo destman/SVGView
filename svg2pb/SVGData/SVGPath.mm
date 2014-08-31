@@ -402,6 +402,71 @@ bool parsePolygonPoints(ProtoSVGElementPath *path,const char *data,bool closePat
     return path->points_size()>=3;
 }
 
+bool SVGPath_ParseLineFromXML(ProtoSVGElementPath *path,TBXMLElement *element)
+{
+    __block bool success = SVGGeneralParams_ParseFromXML(path->mutable_params(), element);
+    
+    __block double x1, y1, x2, y2;
+    
+    enumAttributes(element, true, ^bool(TBXMLAttribute *attribute)
+                   {
+                       dbgLog(@"Warning: unknown attribute %s:%s",attribute->name,attribute->value);
+                       return true;
+                   },
+                   "x1",^bool(TBXMLAttribute *attribute)
+                   {
+                       char *nextVal = NULL;
+                       x1 = strtod(attribute->value, &nextVal);
+                       if( nextVal == attribute->value )
+                       {
+                           success = false;
+                       }
+                       return true;
+                   },
+                   "y1",^bool(TBXMLAttribute *attribute)
+                   {
+                       char *nextVal = NULL;
+                       y1 = strtod(attribute->value, &nextVal);
+                       if( nextVal == attribute->value )
+                       {
+                           success = false;
+                       }
+                       return true;
+                   },
+                   "x2",^bool(TBXMLAttribute *attribute)
+                   {
+                       char *nextVal = NULL;
+                       x2 = strtod(attribute->value, &nextVal);
+                       if( nextVal == attribute->value )
+                       {
+                           success = false;
+                       }
+                       return true;
+                   },
+                   "y2",^bool(TBXMLAttribute *attribute)
+                   {
+                       char *nextVal = NULL;
+                       y2 = strtod(attribute->value, &nextVal);
+                       if( nextVal == attribute->value )
+                       {
+                           success = false;
+                       }
+                       return true;
+                   },
+                   0);
+    
+    if (success) {
+        ProtoSVGElementPath_PathPoint *pt = path->add_points();
+        pt->mutable_move_to()->set_x(x1);
+        pt->mutable_move_to()->set_y(y1);
+        
+        pt = path->add_points();
+        pt->mutable_line_to()->set_x(x2);
+        pt->mutable_line_to()->set_y(y2);
+    }
+    
+    return success;
+}
 
 bool SVGPath_ParsePolygonFromXML(ProtoSVGElementPath *path,TBXMLElement *element, bool closePath)
 {

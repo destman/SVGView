@@ -14,7 +14,7 @@ using namespace std;
 
 bool parseNumbersFromRow(const char *data, int count, double *result, const char **lastChar)
 {
-    char *nextNumber = 0;
+    char *nextNumber = NULL;
     while (count>0) 
     {
         *result = strtod(data, &nextNumber);

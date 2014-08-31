@@ -25,4 +25,6 @@ bool SVGPath_ParseEllipseFromXML(ProtoSVGElementPath *path,TBXMLElement *element
 bool SVGPath_ParseCircleFromXML(ProtoSVGElementPath *path,TBXMLElement *element);
 bool SVGPath_ParseRectFromXML(ProtoSVGElementPath *path,TBXMLElement *element);
 bool SVGPath_ParsePolygonFromXML(ProtoSVGElementPath *path,TBXMLElement *element,bool closePath=true);
+bool SVGPath_ParseLineFromXML(ProtoSVGElementPath *path,TBXMLElement *element);
+
 

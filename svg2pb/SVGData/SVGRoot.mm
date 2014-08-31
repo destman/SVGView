@@ -82,7 +82,15 @@ bool SVGRoot_ParseChilds(TBXMLElement *element, ProtoSVGGeneralParams *params)
                      {
                          params->mutable_childs()->RemoveLast();
                      }                      
-                 },   
+                 },
+                 "line",^void(TBXMLElement *element)
+                 {
+                     ProtoSVGElement *newChild = params->add_childs();
+                     if(!SVGPath_ParseLineFromXML(newChild->mutable_path(), element))
+                     {
+                         params->mutable_childs()->RemoveLast();
+                     }
+                 },
                  "polyline",^void(TBXMLElement *element) 
                  {
                      ProtoSVGElement *newChild = params->add_childs();
