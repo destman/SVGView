@@ -29,6 +29,10 @@ typedef bool (^SVGRenderEnumBlock)(const ProtoSVGElement *object);
 struct SVGRender
 {
 private:
+    struct RenderContext {
+        ProtoSVGPaint fill;
+    };
+    
     ProtoSVGRoot _root;
     map<const ProtoSVGElementPath*, CGPathRef>              _pathMap;
     map<const ProtoSVGElementGradient*, CGGradientRef>      _gradientMap;
@@ -45,7 +49,7 @@ private:
     CGGradientRef buildCGGradient(const ProtoSVGElementGradient *gradient);
     CGGradientRef getCGGradientForGradient(const ProtoSVGElementGradient *gradient);
     const ProtoSVGElement *findElementById(const string &name);
-    void drawPath(CGContextRef context,const ProtoSVGElementPath *pathObject);
+    void drawPath(CGContextRef context,const ProtoSVGElementPath *pathObject, RenderContext &rc);
     
     
     CGAffineTransform transformForSize(CGSize size);

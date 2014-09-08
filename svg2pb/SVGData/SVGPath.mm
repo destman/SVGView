@@ -237,7 +237,8 @@ static bool parsePathString(ProtoSVGElementPath *path,const char *data)
                 ++nPathPoints_ShortCurve;
                 break;
             }
-                
+            
+            case 'Z':
             case 'z':
             {
                 ++data;

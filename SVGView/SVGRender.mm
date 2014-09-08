@@ -7,6 +7,7 @@
 //
 
 #include "SVGRender.h"
+#include <list>
 
 SVGRender::SVGRender()
 {
@@ -87,7 +88,7 @@ bool SVGRender::openFile(const char *name)
             _allStates.insert(states.begin(),states.end());
         }
         return true;
-    },nullptr,false);
+    }, nullptr, false);
     return rv;
 }
 
@@ -252,7 +253,7 @@ const ProtoSVGElement *SVGRender::findElementById(const string &name)
             }
         }
         return true;
-    },nullptr,false);
+    }, nullptr, false);
     
     if(!rv)
     {
@@ -274,20 +275,26 @@ void SVGRender::prepareToDrawData()
             getCGPathForPath(&object->path());
         }        
         return true;
-    },nullptr,false);
+    }, nullptr, false);
 }
 
-void SVGRender::drawPath(CGContextRef context,const ProtoSVGElementPath *pathObject)
+void SVGRender::drawPath(CGContextRef context,const ProtoSVGElementPath *pathObject, RenderContext &rc)
 {
     CGPathRef path = getCGPathForPath(pathObject);
     if(path)
     {
         const ProtoSVGGeneralParams *params = &pathObject->params();
         bool needRestore = prepareToDraw(context, params);
-        
-        if(params->has_fill())
+
+        if (params->has_fill()) {
+            rc.fill.MergeFrom(params->fill());
+            if (params->fill().has_color()) {
+                rc.fill.clear_paint_off();
+            }
+        }
+        const ProtoSVGPaint *fill= &rc.fill;
+        if(fill->has_color() || fill->has_odd() || fill->has_paint_off() || fill->has_ref_id() || fill->has_stroke_width())
         {
-            const ProtoSVGPaint *fill= &params->fill();
             if(!fill->paint_off())
             {
                 CGContextSaveGState(context);
@@ -469,20 +476,35 @@ void SVGRender::draw(CGContextRef context, CGSize size,  bool clearContext)
     prepareToDraw(context, &_root.params());
     
     __block set<const ProtoSVGElement *> needRestoreSet;
+    __block list<RenderContext> renderContextStack;
+    
+    renderContextStack.emplace_back(RenderContext());
     
     enumElements(^(const ProtoSVGElement *object) 
                  {
                      const ProtoSVGGeneralParams *params = &object->group();
-
+                     
+                     RenderContext rc = renderContextStack.back();
+                     
                      if (params) {
                          bool needRestore = prepareToDraw(context, params);
                          if (needRestore)
                              needRestoreSet.insert(object);
+                         
+                         if (params->has_fill()) {
+                             rc.fill.MergeFrom(params->fill());
+                         
+                             // убираем paint_off если ниже был установлен цвет
+                             if (params->fill().has_color()) {
+                                 rc.fill.clear_paint_off();
+                             }
+                         }
                      }
+                     renderContextStack.push_back(rc);
                      
                      if(object->has_path())
                      {
-                         drawPath(context,&object->path());
+                         drawPath(context, &object->path(), rc);
                      }
   
                      return true;
@@ -493,33 +515,12 @@ void SVGRender::draw(CGContextRef context, CGSize size,  bool clearContext)
                      {
                          CGContextRestoreGState(context);
                          needRestoreSet.erase(iter);
-                     } 
+                     }
+                     renderContextStack.pop_back();
                      return true;
                  });
     CGContextRestoreGState(context);
 }    
-
-static CGImageRef MirrorImageDown(CGImageRef sourceImage) 
-{
-    CGImageRef retVal = NULL;
-    
-    size_t width = CGImageGetWidth(sourceImage);
-    size_t height = CGImageGetHeight(sourceImage);
-    
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    CGContextRef offscreenContext = CGBitmapContextCreate(NULL, width, height, 
-                                                          8, 0, colorSpace, kCGImageAlphaPremultipliedFirst);
-    if (offscreenContext != NULL) 
-    {
-        CGContextTranslateCTM(offscreenContext, 0, height);
-        CGContextScaleCTM(offscreenContext, 1, -1);
-        CGContextDrawImage(offscreenContext, CGRectMake(0, 0, width, height), sourceImage);
-        retVal = CGBitmapContextCreateImage(offscreenContext);
-        CGContextRelease(offscreenContext);
-    }
-    CGColorSpaceRelease(colorSpace);
-    return retVal;
-}
 
 UIImage *SVGRender::createUIImage(CGSize size, double scale)
 {
