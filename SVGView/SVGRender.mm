@@ -103,7 +103,20 @@ bool SVGRender::prepareToDraw(CGContextRef context,const ProtoSVGGeneralParams *
         if(object->has_transform())
         {
             const ProtoAffineTransformMatrix *t = &object->transform();
-            CGAffineTransform transform = CGAffineTransformMake(t->a(), t->b(), t->c(), t->d(), t->tx(), t->ty());
+            float a=1,b=0,c=0,d=1,tx=0,ty=0;
+            if (t->has_a())
+                a = t->a();
+            if (t->has_b())
+                b = t->b();
+            if (t->has_c())
+                c = t->c();
+            if (t->has_d())
+                d = t->d();
+            if (t->has_tx())
+                tx = t->tx();
+            if (t->has_ty())
+                ty = t->ty();
+            CGAffineTransform transform = CGAffineTransformMake(a, b, c, d, tx, ty);
             CGContextConcatCTM(context, transform);
         }
         if(object->has_opacity())
