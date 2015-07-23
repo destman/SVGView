@@ -279,7 +279,7 @@ bool SVGPath_ParseFromXML(ProtoSVGElementPath *path,TBXMLElement *element)
                            }
                            return true;
                        },
-                       0);
+                       NULL);
     }else
     {
         success = false;
@@ -315,7 +315,7 @@ bool SVGPath_ParseEllipseFromXML(ProtoSVGElementPath *path,TBXMLElement *element
                        path->set_ry(atof(attribute->value));
                        return true;
                    },
-                   0);
+                   NULL);
     return success;
 }
 
@@ -342,7 +342,7 @@ bool SVGPath_ParseCircleFromXML(ProtoSVGElementPath *path,TBXMLElement *element)
                        path->set_r(atof(attribute->value));
                        return true;
                    },
-                   0);
+                   NULL);
     return success;    
 }
 
@@ -374,7 +374,7 @@ bool SVGPath_ParseRectFromXML(ProtoSVGElementPath *path,TBXMLElement *element)
                        path->mutable_rect()->set_h(atof(attribute->value));
                        return true;
                    },
-                   0);
+                   NULL);
     return success;
 }
 
@@ -454,7 +454,7 @@ bool SVGPath_ParseLineFromXML(ProtoSVGElementPath *path,TBXMLElement *element)
                        }
                        return true;
                    },
-                   0);
+                   NULL);
     
     if (success) {
         ProtoSVGElementPath_PathPoint *pt = path->add_points();
@@ -488,6 +488,6 @@ bool SVGPath_ParsePolygonFromXML(ProtoSVGElementPath *path,TBXMLElement *element
                        }
                        return true;
                    },
-                   0);
+                   NULL);
     return success;
 }

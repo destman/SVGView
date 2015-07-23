@@ -80,7 +80,7 @@ bool SVGRender::openFile(const char *name)
         rv = _root.ParseFromZeroCopyStream(&stream); 
     }
     
-    enumElements(^bool(const ProtoSVGElement *object) 
+    renderElements(^bool(const ProtoSVGElement *object)
     {
         if(object->has_group()&&object->group().has_id())
         {
@@ -88,7 +88,7 @@ bool SVGRender::openFile(const char *name)
             _allStates.insert(states.begin(),states.end());
         }
         return true;
-    }, nullptr, false);
+    }, NULL, false);
     return rv;
 }
 
@@ -254,7 +254,7 @@ CGGradientRef SVGRender::getCGGradientForGradient(const ProtoSVGElementGradient 
 const ProtoSVGElement *SVGRender::findElementById(const string &name)
 {
     __block const ProtoSVGElement *rv = nil;
-    enumElements(^bool(const ProtoSVGElement *object) 
+    renderElements(^bool(const ProtoSVGElement *object)
     {
         if(object->has_gradient())
         {
@@ -266,7 +266,7 @@ const ProtoSVGElement *SVGRender::findElementById(const string &name)
             }
         }
         return true;
-    }, nullptr, false);
+    }, NULL, false);
     
     if(!rv)
     {
@@ -277,7 +277,7 @@ const ProtoSVGElement *SVGRender::findElementById(const string &name)
 
 void SVGRender::prepareToDrawData()
 {
-    enumElements(^(const ProtoSVGElement *object) 
+    renderElements(^(const ProtoSVGElement *object)
     {
         if(object->has_gradient())
         {
@@ -288,7 +288,7 @@ void SVGRender::prepareToDrawData()
             getCGPathForPath(&object->path());
         }        
         return true;
-    }, nullptr, false);
+    }, NULL, false);
 }
 
 void SVGRender::drawPath(CGContextRef context,const ProtoSVGElementPath *pathObject, RenderContext &rc)
@@ -415,7 +415,7 @@ void SVGRender::drawPath(CGContextRef context,const ProtoSVGElementPath *pathObj
                     CGContextRestoreGState(context);
                 }else
                 {
-                    dbgLog(@"Unsupported stroke draw mode");
+                    NSLog(@"Unsupported stroke draw mode");
                 }
             }                    
         }           
@@ -444,7 +444,7 @@ void SVGRender::setStateActive(int stateNm)
         _activeStates.insert(stateNm);
     }else
     {
-        dbg_log("Use of undefined state %d",stateNm);
+        printf("Use of undefined state %d",stateNm);
     }
 }
 
@@ -493,7 +493,7 @@ void SVGRender::draw(CGContextRef context, CGSize size,  bool clearContext)
     
     renderContextStack.emplace_back(RenderContext());
     
-    enumElements(^(const ProtoSVGElement *object) 
+    renderElements(^(const ProtoSVGElement *object)
                  {
                      const ProtoSVGGeneralParams *params = &object->group();
                      
@@ -545,7 +545,7 @@ UIImage *SVGRender::createUIImage(CGSize size, double scale)
                                                  colorSpace, kCGImageAlphaPremultipliedLast);
     if(context==nil)
     {
-        dbgLog(@"Error creating context.");
+        NSLog(@"Error creating context.");
     }
     CGColorSpaceRelease(colorSpace);
     
@@ -589,7 +589,7 @@ bool SVGRender::isPointInside(CGPoint point, CGSize size)
     
     __block bool rv = false;
     
-    enumElements(^(const ProtoSVGElement *object) 
+    renderElements(^(const ProtoSVGElement *object)
     {
         if(object->has_path())
         {
@@ -627,7 +627,7 @@ set<int>  SVGRender::statesAtPoint(CGPoint point, CGSize size,bool activeOnly)
     __block set<int> states;
     __block set<int> curStates;
     
-    enumElements(^bool(const ProtoSVGElement *object) 
+    renderElements(^bool(const ProtoSVGElement *object)
     {
         if(object->has_group())
         {
@@ -661,7 +661,7 @@ set<int>  SVGRender::statesAtPoint(CGPoint point, CGSize size,bool activeOnly)
             }
         }        
         return true;
-    }, nil);
+    }, NULL);
     
     if(!activeOnly)
     {
@@ -681,19 +681,19 @@ set<int>  SVGRender::statesAtPoint(CGPoint point, CGSize size,bool activeOnly)
 
 
 
-bool SVGRender::enumElements(SVGRenderEnumBlock enumEnterBlock, 
-                             SVGRenderEnumBlock enumExitBlock, 
+bool SVGRender::renderElements(SVGRenderEnumBlock renderEnterBlock,
+                             SVGRenderEnumBlock renderExitBlock, 
                              const ProtoSVGElement *object, 
                              bool onlyActive)
 {
-    if (enumEnterBlock)
-        enumEnterBlock(object);
+    if (renderEnterBlock)
+        renderEnterBlock(object);
     
     if(object->has_defs() && !onlyActive)
     {
         for (int i=0; i<object->defs().childs_size();i++)
         {
-            if(!enumElements(enumEnterBlock, enumExitBlock, &object->defs().childs(i),onlyActive))
+            if(!renderElements(renderEnterBlock, renderExitBlock, &object->defs().childs(i),onlyActive))
             {
                 return false;
             }            
@@ -703,23 +703,23 @@ bool SVGRender::enumElements(SVGRenderEnumBlock enumEnterBlock,
     {
         for (int i=0; i<object->group().childs_size();i++)
         {
-            if(!enumElements(enumEnterBlock, enumExitBlock, &object->group().childs(i),onlyActive))
+            if(!renderElements(renderEnterBlock, renderExitBlock, &object->group().childs(i),onlyActive))
             {
                 return false;
             }            
         }
     }
-    if (enumExitBlock)
-        enumExitBlock(object);
+    if (renderExitBlock)
+        renderExitBlock(object);
     return true;
 }
 
-void SVGRender::enumElements(SVGRenderEnumBlock enumEnterBlock, 
-                             SVGRenderEnumBlock enumExitBlock, bool onlyActive)
+void SVGRender::renderElements(SVGRenderEnumBlock renderEnterBlock,
+                             SVGRenderEnumBlock renderExitBlock, bool onlyActive)
 {
     for (int i=0; i<_root.params().childs_size();i++)
     {
-        if(!enumElements(enumEnterBlock, enumExitBlock, &_root.params().childs(i),onlyActive))
+        if(!renderElements(renderEnterBlock, renderExitBlock, &_root.params().childs(i),onlyActive))
         {
             break;
         }

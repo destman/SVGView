@@ -1,6 +1,5 @@
 option optimize_for = LITE_RUNTIME;
 
-
 message ProtoPoint
 {
     optional float x = 1;

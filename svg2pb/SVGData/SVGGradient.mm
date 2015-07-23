@@ -87,7 +87,7 @@ bool parseGradientSteps(ProtoSVGElementGradient *gradient,TBXMLElement *element)
                                }
                                return true;
                            },
-                           0);
+                           NULL);
         }else
         {
             dbgLog(@"Warning : uknown data in gradient %@",childName);
@@ -146,7 +146,7 @@ bool SVGGradient_ParseLinearGradientFromXML(ProtoSVGElementGradient *gradient,TB
                        }                           
                        return true;
                    },
-                   0);    
+                   NULL);
     
     
     if(success)
@@ -208,7 +208,7 @@ bool SVGGradient_ParseRadialGradientFromXML(ProtoSVGElementGradient *gradient,TB
                        }                           
                        return true;
                    },
-                   0);    
+                   NULL);
     
     
     if(success)

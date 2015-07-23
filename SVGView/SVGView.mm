@@ -57,13 +57,13 @@
 
 - (void) drawRect:(CGRect)rect
 {
-    dbgLog(@"SVGView: draw request");
+    NSLog(@"SVGView: draw request");
     @synchronized(self)
     {
         CGContextRef context = UIGraphicsGetCurrentContext();
         _render->draw(context,self.bounds.size);
     }
-    dbgLog(@"SVGView: draw request finished");
+    NSLog(@"SVGView: draw request finished");
 }
 
 - (void) prepareToDraw

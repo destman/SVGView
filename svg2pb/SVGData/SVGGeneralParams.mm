@@ -80,7 +80,6 @@ bool SVGGeneralParams_ParseFromXML(ProtoSVGGeneralParams *params, TBXMLElement *
                        }
                        
                        return true;
-                   },
-                   0);    
+                   }, NULL);
     return success;
 }

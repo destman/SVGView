@@ -1,0 +1,10 @@
+PODS:
+  - GoogleProtobuf (2.6.1)
+
+DEPENDENCIES:
+  - GoogleProtobuf
+
+SPEC CHECKSUMS:
+  GoogleProtobuf: 6f0dd22a96385c13bb9b8e6e5b66e81a93e17f58
+
+COCOAPODS: 0.38.0

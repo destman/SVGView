@@ -90,13 +90,18 @@ void enumElements(TBXMLElement *element,EnumElementsBlock unknownElementBlock,..
     {
         va_list vl;
         va_start(vl,unknownElementBlock);
-        const char *nextName = va_arg(vl, const char *);
-        while (nextName) 
+        while (true)
         {
+            const char *nextName = va_arg(vl, const char *);
+            if (!nextName)
+                break;
+            
             EnumElementsBlock attribBlock = (EnumElementsBlock)va_arg(vl, void *);
+            if (!attribBlock)
+                break;
+            
             searchMap.insert(std::pair<string, EnumElementsBlock>(nextName,attribBlock));
-            nextName = va_arg(vl, const char *);
-        }            
+        }
         va_end(vl);
     }        
     
@@ -126,12 +131,17 @@ void enumAttributes(TBXMLElement *element,bool removeOnSuccess,EnumAttributesBlo
     {
         va_list vl;
         va_start(vl,unknownAttributeBlock);
-        const char *nextName = va_arg(vl, const char *);
-        while (nextName) 
+        while (true)
         {
+            const char *nextName = va_arg(vl, const char *);
+            if (!nextName)
+                break;
+            
             EnumAttributesBlock attribBlock = (EnumAttributesBlock)va_arg(vl, void *);
+            if (!attribBlock)
+                break;
+            
             attribMap.insert(std::pair<string, EnumAttributesBlock>(nextName,attribBlock));
-            nextName = va_arg(vl, const char *);
         }            
         va_end(vl);
     }

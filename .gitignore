@@ -1,11 +1,10 @@
-build*
+Pods
+project.xcworkspace
 *.pbxuser
 *.perspectivev3
-.svn
+xcshareddata
 xcuserdata
-project.xcworkspace
 *.mode1v3
-Classes/.DS_Store
 .DS_Store
 *.pb.cc
 *.pb.h

@@ -12,6 +12,8 @@
 #import "SVGGradient.h"
 #import "SVGPath.h"
 
+bool SVGRoot_ParseChilds(TBXMLElement *element, ProtoSVGGeneralParams *params);
+
 bool SVGRoot_ParseChilds(TBXMLElement *element, ProtoSVGGeneralParams *params)
 {
     enumElements(element, ^void(TBXMLElement *element) 
@@ -115,7 +117,7 @@ bool SVGRoot_ParseChilds(TBXMLElement *element, ProtoSVGGeneralParams *params)
                          params->mutable_childs()->RemoveLast();
                      }                      
                  },                 
-                 0);    
+                 NULL);
     return true;
 };
 
@@ -171,7 +173,7 @@ ProtoSVGRoot *SVGRoot_ParseFromXML(TBXMLElement *element)
                                }                               
                                return true;
                            },                       
-                           0);            
+                           NULL);
             
             if(!rv->has_bounds())
             {
@@ -194,52 +196,3 @@ ProtoSVGRoot *SVGRoot_ParseFromXML(TBXMLElement *element)
     }
     return rv;
 }
-
-
-/*@implementation SVGData
-
-- (void) dealloc
-{
-    [super dealloc];
-}
-
-- (void) expandIDLinks:(SVGBaseObject *)curObject
-{
-    if([curObject.fillValue isKindOfClass:[NSString class]])
-    {
-        NSString *linkObjectID = curObject.fillValue;
-        SVGBaseObject *linkObject = [self findObjectWithID:linkObjectID];
-        if(linkObject==nil)
-        {
-            dbgLog(@"Failed to find object with id %@",linkObjectID);
-        }
-        curObject.fillValue = linkObject;
-    }
-    
-    for (SVGBaseObject *nextObject in curObject)
-    {
-        [self expandIDLinks:nextObject];
-    }
-}
-
-- (void) applyTransfromForSize:(CGSize)size toContext:(CGContextRef)context
-{
-    CGContextTranslateCTM   (context, _frame.origin.x               , _frame.origin.y);
-    double sx = size.width/_frame.size.width;
-    double sy = size.height/_frame.size.height;
-    
-    if(sx>sy)
-    {
-        sx=sy;
-    }else
-    {
-        sy=sx;
-    }
-    CGContextScaleCTM(context, sx, sy );
-    
-    CGContextTranslateCTM(context, -_bounds.origin.x, -_bounds.origin.y);
-    CGContextScaleCTM(context, _frame.size.width/_bounds.size.width, _frame.size.height/_bounds.size.height);
-    
-}
-
-@end*/
