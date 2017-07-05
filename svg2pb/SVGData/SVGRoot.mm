@@ -189,10 +189,7 @@ ProtoSVGRoot *SVGRoot_ParseFromXML(TBXMLElement *element)
         {
             delete rv;
             rv = 0;
-        }
-        
-        
-        
+        }                        
     }
     return rv;
 }

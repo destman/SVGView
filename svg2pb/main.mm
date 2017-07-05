@@ -12,7 +12,7 @@
 #include "SVGRoot.h"
 #include "SVGPath.h"
 
-void printPathPoints(int level,const ProtoSVGElementPath *path)
+static void printPathPoints(int level,const ProtoSVGElementPath *path)
 {
     for(int i=0;i<path->points_size();i++)
     {
@@ -25,7 +25,7 @@ void printPathPoints(int level,const ProtoSVGElementPath *path)
     }
 }
 
-void printStructure(int level,const ProtoSVGGeneralParams *params)
+static void printStructure(int level,const ProtoSVGGeneralParams *params)
 {
     for(int i=0;i<params->childs_size();i++)
     {

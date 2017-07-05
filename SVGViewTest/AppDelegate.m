@@ -15,10 +15,9 @@
 {
     _window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     
-    _navCtl = [[UINavigationController alloc] initWithRootViewController:[[TestViewController alloc] initWithNibName:nil bundle:nil]];
-    [_navCtl setNavigationBarHidden:YES];
-
-    [_window addSubview:_navCtl.view];
+    UINavigationController *vc = [[UINavigationController alloc] initWithRootViewController:[[TestViewController alloc] initWithNibName:nil bundle:nil]];
+    _window.rootViewController = vc;
+    [vc setNavigationBarHidden:YES];
     [_window makeKeyAndVisible];
     return YES;
 }

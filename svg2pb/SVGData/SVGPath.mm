@@ -138,12 +138,7 @@ static bool parsePathString(ProtoSVGElementPath *path,const char *data)
                 {
                     curY += vals[0];
                 }
-                ProtoSVGElementPath_PathPoint *point = nil;
-                if(point==nil)
-                {
-                    point=path->add_points(); 
-                } 
-                
+                ProtoSVGElementPath_PathPoint *point = path->add_points();
                 point->mutable_line_to()->set_x(curX);
                 point->mutable_line_to()->set_y(curY);
                 prevCommandIsCurve = NO;
@@ -174,7 +169,6 @@ static bool parsePathString(ProtoSVGElementPath *path,const char *data)
                 curY = vals[5];
                 
                 ProtoSVGElementPath_PathPoint *point = path->add_points();
-                
                 point->mutable_curve_to()->set_cp1x(vals[0]);
                 point->mutable_curve_to()->set_cp1y(vals[1]);
                 point->mutable_curve_to()->set_cp2x(vals[2]);
@@ -215,12 +209,7 @@ static bool parsePathString(ProtoSVGElementPath *path,const char *data)
                     prevCurveCDY = vals[3]-vals[1];
                 }
                 
-                ProtoSVGElementPath_PathPoint *point = nil;
-                if(point==nil)
-                {
-                    point=path->add_points(); 
-                } 
-                
+                ProtoSVGElementPath_PathPoint *point = path->add_points();
                 point->mutable_curve_to()->set_cp1x(curX-prevCurveCDX);
                 point->mutable_curve_to()->set_cp1y(curY-prevCurveCDY);
                 point->mutable_curve_to()->set_cp2x(vals[0]);
@@ -242,14 +231,40 @@ static bool parsePathString(ProtoSVGElementPath *path,const char *data)
             case 'z':
             {
                 ++data;
-                ProtoSVGElementPath_PathPoint *point = nil;
-                if(point==nil)
-                {
-                    point=path->add_points(); 
-                }                 
+                ProtoSVGElementPath_PathPoint *point = path->add_points();
                 point->set_close_path(true);
                 prevCommandIsCurve = NO;
                 ++nPathPoints_ColosePath;
+                break;
+            }
+                
+            case 'a':
+                isAbsolute = false;
+            case 'A': //ARCS not supported
+            {
+                ++data;
+                double vals[7];
+                if(!parseNumbers(data, 7, vals, &data))
+                {
+                    dbgLog(@"Error in SVG: expected 7 params: %s",data);
+                    return NO;
+                }
+                
+                if(isAbsolute)
+                {
+                    curX  = vals[5];
+                    curY  = vals[6];
+                }else
+                {
+                    curX += vals[5];
+                    curY += vals[6];
+                }
+                
+                ProtoSVGElementPath_PathPoint *point = path->add_points();
+                point->mutable_move_to()->set_x(curX);
+                point->mutable_move_to()->set_y(curY);
+                prevCommandIsCurve = NO;
+                dbgLog(@"ARCS not supported");
                 break;
             }
             default:
