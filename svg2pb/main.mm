@@ -51,6 +51,49 @@ static void printStructure(int level,const ProtoSVGGeneralParams *params)
     }
 }
 
+static void enumPath(const ProtoSVGGeneralParams &params, const std::function<void(const ProtoSVGElementPath &path)> &callback)
+{
+    for(auto &child : params.childs())
+    {
+        if(child.has_group())
+            enumPath(child.group(), callback);
+        if(child.has_defs())
+            enumPath(child.defs(), callback);
+        if(child.has_path())
+            callback(child.path());
+    }    
+}
+
+static void printGeomStats(ProtoSVGRoot *svg)
+{
+    int nPathElements = 0;
+    int nPathPoints_Move = 0;
+    int nPathPoints_Line = 0;
+    int nPathPoints_Curve = 0;
+    int nPathPoints_ColosePath = 0;
+    
+    enumPath(svg->params() , [&](const ProtoSVGElementPath&path){
+        nPathElements++;
+        for(auto &point : path.points())
+        {
+            if(point.has_move_to())
+                nPathPoints_Move++;
+            if(point.has_line_to())
+                nPathPoints_Line++;
+            if(point.has_curve_to())
+                nPathPoints_Curve++;
+            if(point.has_close_path())
+                nPathPoints_ColosePath++;
+        }
+    });
+    dbg_log("Path elements = %d",nPathElements);
+    dbg_log("Total path points = %d",nPathPoints_Move+nPathPoints_Line+nPathPoints_Curve+nPathPoints_ColosePath);
+    dbg_log("Move points = %d"  ,nPathPoints_Move);
+    dbg_log("Line points = %d"  ,nPathPoints_Line);
+    dbg_log("Curve points = %d" ,nPathPoints_Curve);
+    dbg_log("Close points = %d" ,nPathPoints_ColosePath);
+}
+
 int main (int argc, const char * argv[])
 {
     dbg_log("svg2pb v1.1\n");
@@ -75,17 +118,7 @@ int main (int argc, const char * argv[])
         {
             printf("Failed to open svg file %s\n", argv[1]);
             return 2;
-        }
-
-        nPathElements = 0;
-       
-        nPathPoints_Move=0;
-        nPathPoints_Line=0;
-        nPathPoints_HLine=0;
-        nPathPoints_VLine=0;
-        nPathPoints_Curve=0;
-        nPathPoints_ShortCurve=0;
-        nPathPoints_ColosePath=0;        
+        }      
         
         dbg_log("Parsing XML");
         ProtoSVGRoot *svg=0;
@@ -111,18 +144,12 @@ int main (int argc, const char * argv[])
             return 3;
         }
         
-        int outSize = svg->ByteSize();
+#ifdef DEBUG
         //printStructure(0,&svg->params());
-        dbg_log("Output size = %d",outSize);
-        dbg_log("Path elements = %d",nPathElements);
-        dbg_log("Total path points = %d",nPathPoints_Move+nPathPoints_Line+nPathPoints_HLine+nPathPoints_VLine+nPathPoints_Curve+nPathPoints_ShortCurve+nPathPoints_ColosePath);
-        dbg_log("Move points = %d"  ,nPathPoints_Move);
-        dbg_log("Line points = %d"  ,nPathPoints_Line);
-        dbg_log("HLine points = %d" ,nPathPoints_HLine);
-        dbg_log("VLine points = %d" ,nPathPoints_VLine);
-        dbg_log("Curve points = %d" ,nPathPoints_Curve);
-        dbg_log("SCurve points = %d",nPathPoints_ShortCurve);
-        dbg_log("Close points = %d" ,nPathPoints_ColosePath);
+        dbg_log("Output size = %d", svg->ByteSize());
+        printGeomStats(svg);
+#endif
+        
         
         dbg_log("Saving svgpb");
         if(!svg->SerializeToZeroCopyStream(&stream))

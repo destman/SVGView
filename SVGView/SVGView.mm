@@ -9,7 +9,7 @@
 #import "SVGView.h"
 #import <QuartzCore/QuartzCore.h>
 
-#include "SVGRender.h"
+#include "SVGRender.hpp"
 
 @implementation SVGView
 
@@ -130,7 +130,7 @@
         {
             if(_svgFile==nil)
             {
-                _render->closeFile();
+                _render->close();
             }else
             {
                 if(_render->openFile([_svgFile UTF8String]))

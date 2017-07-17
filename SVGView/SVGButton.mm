@@ -7,7 +7,7 @@
 //
 
 #import "SVGButton.h"
-#import "SVGRender.h"
+#import "SVGRender.hpp"
 
 @implementation SVGButton
 
@@ -106,7 +106,7 @@
 #endif 
         if(_svgFile==nil)
         {
-            _render->closeFile();
+            _render->close();
         }else
         {
             if(_render->openFile([_svgFile UTF8String]))

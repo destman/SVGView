@@ -10,15 +10,6 @@
 #import "SVGGeneralParams.h"
 #import "SVGParseTools.h"
 
-int nPathElements;
-int nPathPoints_Move;
-int nPathPoints_Line;
-int nPathPoints_HLine;
-int nPathPoints_VLine;
-int nPathPoints_Curve;
-int nPathPoints_ShortCurve;
-int nPathPoints_ColosePath;
-
 
 static bool parsePathString(ProtoSVGElementPath *path,const char *data)
 {
@@ -61,8 +52,6 @@ static bool parsePathString(ProtoSVGElementPath *path,const char *data)
                 point->mutable_move_to()->set_x(curX);
                 point->mutable_move_to()->set_y(curY);
                 prevCommandIsCurve = NO;
-                
-                ++nPathPoints_Move;
                 break;
             }
             case 'l':
@@ -91,9 +80,7 @@ static bool parsePathString(ProtoSVGElementPath *path,const char *data)
                 point->mutable_line_to()->set_x(curX);
                 point->mutable_line_to()->set_y(curY);
                 prevCommandIsCurve = NO;
-                
-                ++nPathPoints_Line;
-                break;                
+                break;
             }
             case 'h':
                 isAbsolute = false;
@@ -117,8 +104,6 @@ static bool parsePathString(ProtoSVGElementPath *path,const char *data)
                 point->mutable_line_to()->set_x(curX);
                 point->mutable_line_to()->set_y(curY);
                 prevCommandIsCurve = NO;
-
-                ++nPathPoints_HLine;
                 break;
             }                
             case 'v':
@@ -142,8 +127,6 @@ static bool parsePathString(ProtoSVGElementPath *path,const char *data)
                 point->mutable_line_to()->set_x(curX);
                 point->mutable_line_to()->set_y(curY);
                 prevCommandIsCurve = NO;
-                
-                ++nPathPoints_VLine;
                 break;
             }
             case 'c':
@@ -179,8 +162,6 @@ static bool parsePathString(ProtoSVGElementPath *path,const char *data)
                 prevCurveCDX = vals[2]-curX;
                 prevCurveCDY = vals[3]-curY;
                 prevCommandIsCurve = YES;
-                
-                ++nPathPoints_Curve;
                 break;
             }
             case 's':
@@ -222,8 +203,6 @@ static bool parsePathString(ProtoSVGElementPath *path,const char *data)
                 prevCurveCDX = vals[0]-curX;
                 prevCurveCDY = vals[1]-curY;
                 prevCommandIsCurve = YES;                
-                
-                ++nPathPoints_ShortCurve;
                 break;
             }
             
@@ -234,7 +213,6 @@ static bool parsePathString(ProtoSVGElementPath *path,const char *data)
                 ProtoSVGElementPath_PathPoint *point = path->add_points();
                 point->set_close_path(true);
                 prevCommandIsCurve = NO;
-                ++nPathPoints_ColosePath;
                 break;
             }
                 
@@ -394,7 +372,7 @@ bool SVGPath_ParseRectFromXML(ProtoSVGElementPath *path,TBXMLElement *element)
 }
 
 
-bool parsePolygonPoints(ProtoSVGElementPath *path,const char *data,bool closePath)
+static bool parsePolygonPoints(ProtoSVGElementPath *path,const char *data,bool closePath)
 {
     double point[2];
     while (parseNumbersFromRow(data, 2, point, &data)) 
@@ -414,8 +392,9 @@ bool parsePolygonPoints(ProtoSVGElementPath *path,const char *data,bool closePat
     {
         ProtoSVGElementPath_PathPoint *nextPoint = path->add_points();
         nextPoint->set_close_path(true);
+        return path->points_size()>=3;
     }
-    return path->points_size()>=3;
+    return path->points_size()>=2;
 }
 
 bool SVGPath_ParseLineFromXML(ProtoSVGElementPath *path,TBXMLElement *element)
@@ -479,8 +458,6 @@ bool SVGPath_ParseLineFromXML(ProtoSVGElementPath *path,TBXMLElement *element)
         pt = path->add_points();
         pt->mutable_line_to()->set_x(x2);
         pt->mutable_line_to()->set_y(y2);
-        
-        ++nPathPoints_Line;
     }
     
     return success;

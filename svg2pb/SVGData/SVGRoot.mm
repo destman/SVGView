@@ -48,9 +48,6 @@ bool SVGRoot_ParseChilds(TBXMLElement *element, ProtoSVGGeneralParams *params)
                      if(!SVGPath_ParseFromXML(newChild->mutable_path(), element))
                      {
                          params->mutable_childs()->RemoveLast();
-                     }else
-                     {
-                         ++nPathElements;
                      }
                  },
                  "ellipse",^void(TBXMLElement *element) 
