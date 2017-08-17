@@ -121,6 +121,10 @@ bool SVGGradient_ParseLinearGradientFromXML(ProtoSVGElementGradient *gradient,TB
 {
     __block bool success = SVGGeneralParams_ParseFromXML(gradient->mutable_params(), element);
     gradient->set_gradientunits_isuserspace(false);
+    gradient->mutable_startpoint()->set_x(0);
+    gradient->mutable_startpoint()->set_y(0);
+    gradient->mutable_endpoint()->set_x(1);
+    gradient->mutable_endpoint()->set_y(0);
     enumAttributes(element, true, ^bool(TBXMLAttribute *attribute) 
                    {
                        dbgLog(@"Error loading svg: Unknown attribute %s in gradient",attribute->name);            
@@ -184,6 +188,9 @@ bool SVGGradient_ParseRadialGradientFromXML(ProtoSVGElementGradient *gradient,TB
 {
     __block bool success = SVGGeneralParams_ParseFromXML(gradient->mutable_params(), element);
     gradient->set_gradientunits_isuserspace(false);
+    gradient->mutable_center()->set_x(0.5);
+    gradient->mutable_center()->set_y(0.5);
+    gradient->set_r(0.5);
     enumAttributes(element, true, ^bool(TBXMLAttribute *attribute) 
                    {
                        dbgLog(@"Error loading svg: Unknown attribute %s in gradient",attribute->name);            
