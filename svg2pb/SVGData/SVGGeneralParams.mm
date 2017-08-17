@@ -27,6 +27,11 @@ bool SVGGeneralParams_ParseFromXML(ProtoSVGGeneralParams *params, TBXMLElement *
                        }
                        return true;
                    },
+                   "fill-opacity",^bool(TBXMLAttribute *attribute)
+                   {
+                       params->set_opacity(atof(attribute->value));
+                       return true;
+                   },
                    "stroke",^bool(TBXMLAttribute *attribute) 
                    {
                        if(!parsePaintString(params->mutable_stroke(),attribute->value))
