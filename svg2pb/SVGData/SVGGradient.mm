@@ -11,7 +11,7 @@
 #include "SVGParseTools.h"
 
 
-bool parseStyleString(const char *str, ProtoSVGElementGradient_GradientStop *stop)
+static bool parseStyleString(const char *str, ProtoSVGElementGradient_GradientStop *stop)
 {
     while (str) 
     {
@@ -57,8 +57,17 @@ bool parseStyleString(const char *str, ProtoSVGElementGradient_GradientStop *sto
     return true;
 }
 
+//Returns value. of value/100 if '%' is after number
+static double parseLength(const char *str)
+{
+    char *end;
+    double value = strtod(str, &end);
+    if(end[0]=='%')
+        value /= 100;
+    return value;
+}
 
-bool parseGradientSteps(ProtoSVGElementGradient *gradient,TBXMLElement *element)
+static bool parseGradientSteps(ProtoSVGElementGradient *gradient,TBXMLElement *element)
 {
     __block bool success = true;
     TBXMLElement *child = element->firstChild;
@@ -75,10 +84,19 @@ bool parseGradientSteps(ProtoSVGElementGradient *gradient,TBXMLElement *element)
                            },
                            "offset", ^bool(TBXMLAttribute *attribute) 
                            {
-                               stop->set_offset(atof(attribute->value));
+                               stop->set_offset(parseLength(attribute->value));
                                return true;
                            },
-                           "style",^bool(TBXMLAttribute *attribute) 
+                           "stop-color", ^bool(TBXMLAttribute *attribute)
+                           {
+                               return parseColorString(stop->mutable_color(), attribute->value);
+                           },
+                           "stop-opacity", ^bool(TBXMLAttribute *attribute)
+                           {
+                               stop->set_alpha(atof(attribute->value));
+                               return true;
+                           },
+                           "style",^bool(TBXMLAttribute *attribute)
                            {
                                if(!parseStyleString(attribute->value,stop))
                                {
@@ -102,6 +120,7 @@ bool parseGradientSteps(ProtoSVGElementGradient *gradient,TBXMLElement *element)
 bool SVGGradient_ParseLinearGradientFromXML(ProtoSVGElementGradient *gradient,TBXMLElement *element)
 {
     __block bool success = SVGGeneralParams_ParseFromXML(gradient->mutable_params(), element);
+    gradient->set_gradientunits_isuserspace(false);
     enumAttributes(element, true, ^bool(TBXMLAttribute *attribute) 
                    {
                        dbgLog(@"Error loading svg: Unknown attribute %s in gradient",attribute->name);            
@@ -110,31 +129,36 @@ bool SVGGradient_ParseLinearGradientFromXML(ProtoSVGElementGradient *gradient,TB
                    },
                    "gradientUnits",^bool(TBXMLAttribute *attribute)
                    {
-                       if(strcmp(attribute->value, "userSpaceOnUse"))
+                       if(!strcmp(attribute->value, "userSpaceOnUse"))
                        {
-                           success = false;
+                           gradient->set_gradientunits_isuserspace(true);
+                       }else if(!strcmp(attribute->value, "objectBoundingBox"))
+                       {
+                           gradient->set_gradientunits_isuserspace(false);
+                       }else
+                       {
                            dbgLog(@"Unknown gradient gradientUnits %s",attribute->value);
                        }
                        return true;
                    },
                    "x1",^bool(TBXMLAttribute *attribute) 
                    {
-                       gradient->mutable_startpoint()->set_x(atof(attribute->value));
+                       gradient->mutable_startpoint()->set_x(parseLength(attribute->value));
                        return true;
                    },
                    "y1",^bool(TBXMLAttribute *attribute) 
                    {
-                       gradient->mutable_startpoint()->set_y(atof(attribute->value));
+                       gradient->mutable_startpoint()->set_y(parseLength(attribute->value));
                        return true;
                    },
                    "x2",^bool(TBXMLAttribute *attribute) 
                    {
-                       gradient->mutable_endpoint()->set_x(atof(attribute->value));
+                       gradient->mutable_endpoint()->set_x(parseLength(attribute->value));
                        return true;
                    },
                    "y2",^bool(TBXMLAttribute *attribute) 
                    {
-                       gradient->mutable_endpoint()->set_y(atof(attribute->value));
+                       gradient->mutable_endpoint()->set_y(parseLength(attribute->value));
                        return true;
                    },
                    "gradientTransform",^bool(TBXMLAttribute *attribute) 
@@ -159,6 +183,7 @@ bool SVGGradient_ParseLinearGradientFromXML(ProtoSVGElementGradient *gradient,TB
 bool SVGGradient_ParseRadialGradientFromXML(ProtoSVGElementGradient *gradient,TBXMLElement *element)
 {
     __block bool success = SVGGeneralParams_ParseFromXML(gradient->mutable_params(), element);
+    gradient->set_gradientunits_isuserspace(false);
     enumAttributes(element, true, ^bool(TBXMLAttribute *attribute) 
                    {
                        dbgLog(@"Error loading svg: Unknown attribute %s in gradient",attribute->name);            
@@ -167,36 +192,41 @@ bool SVGGradient_ParseRadialGradientFromXML(ProtoSVGElementGradient *gradient,TB
                    },
                    "gradientUnits",^bool(TBXMLAttribute *attribute)
                    {
-                       if(strcmp(attribute->value, "userSpaceOnUse"))
+                       if(!strcmp(attribute->value, "userSpaceOnUse"))
                        {
-                           success = false;
+                           gradient->set_gradientunits_isuserspace(true);
+                       }else if(!strcmp(attribute->value, "objectBoundingBox"))
+                       {
+                           gradient->set_gradientunits_isuserspace(false);
+                       }else
+                       {
                            dbgLog(@"Unknown gradient gradientUnits %s",attribute->value);
                        }
                        return true;
                    },
                    "cx",^bool(TBXMLAttribute *attribute) 
                    {
-                       gradient->mutable_center()->set_x(atof(attribute->value));
+                       gradient->mutable_center()->set_x(parseLength(attribute->value));
                        return true;
                    },
                    "cy",^bool(TBXMLAttribute *attribute) 
                    {
-                       gradient->mutable_center()->set_y(atof(attribute->value));
+                       gradient->mutable_center()->set_y(parseLength(attribute->value));
                        return true;
                    },
                    "r",^bool(TBXMLAttribute *attribute) 
                    {
-                       gradient->set_r(atof(attribute->value));
+                       gradient->set_r(parseLength(attribute->value));
                        return true;
                    },
                    "fx",^bool(TBXMLAttribute *attribute)
                    {
-                       gradient->mutable_focuspoint()->set_x(atof(attribute->value));
+                       gradient->mutable_focuspoint()->set_x(parseLength(attribute->value));
                        return true;
                    },
                    "fy",^bool(TBXMLAttribute *attribute)
                    {
-                       gradient->mutable_focuspoint()->set_y(atof(attribute->value));
+                       gradient->mutable_focuspoint()->set_y(parseLength(attribute->value));
                        return true;
                    },
                    "gradientTransform",^bool(TBXMLAttribute *attribute) 

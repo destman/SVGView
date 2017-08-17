@@ -184,7 +184,7 @@ void enumAttributes(TBXMLElement *element,bool removeOnSuccess,EnumAttributesBlo
     }
 }
 
-bool    parseColorString(ProtoColor    *color, const char *val)
+bool parseColorString(ProtoColor *color, const char *val)
 {
     int len = strlen(val);
     if(*val=='#' && len==7)
@@ -195,7 +195,14 @@ bool    parseColorString(ProtoColor    *color, const char *val)
         color->set_g(bgr[1]);
         color->set_b(bgr[0]);
         return true;
-    }    
+    }else if(*val=='#' && len==4)
+    {
+        long l = strtol(val+1, nil, 16);
+        color->set_r(( (l >> 8) & 0xf ) * 0x11);
+        color->set_g(( (l >> 4) & 0xf ) * 0x11);
+        color->set_b(( l & 0xf ) * 0x11);
+        return true;
+    }
     return false;
 }
 

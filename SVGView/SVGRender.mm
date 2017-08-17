@@ -211,13 +211,7 @@ struct SVGRenderPrivate
             cols[i*4+0] = stop->color().r();
             cols[i*4+1] = stop->color().g();
             cols[i*4+2] = stop->color().b();
-            if(stop->has_alpha())
-            {
-                cols[i*4+3] = stop->alpha();
-            }else
-            {
-                cols[i*4+3] = 1;
-            }
+            cols[i*4+3] = stop->has_alpha() ? stop->alpha() : 1;
             cols[i*4+0] /= 255;
             cols[i*4+1] /= 255;
             cols[i*4+2] /= 255;
@@ -299,14 +293,14 @@ struct SVGRenderPrivate
             
             if (params->has_fill()) {
                 rc.fill.MergeFrom(params->fill());
-                if (params->fill().has_color()) {
+                if (params->fill().has_color() || params->fill().has_ref_id()) {
                     rc.fill.clear_paint_off();
                 }
             }
             
             if (params->has_stroke()) {
                 rc.stroke.MergeFrom(params->stroke());
-                if (params->stroke().has_color()) {
+                if (params->stroke().has_color() || params->stroke().has_ref_id()) {
                     rc.stroke.clear_paint_off();
                 }
             }
@@ -341,33 +335,61 @@ struct SVGRenderPrivate
                             const ProtoSVGElementGradient *fillGradient=&element->gradient();
                             CGGradientRef gradient = getCGGradientForGradient(fillGradient);
                             CGContextClip(context);
-                            if(fillGradient->has_gradienttransform())
-                            {
-                                const ProtoAffineTransformMatrix *t = &fillGradient->gradienttransform();
-                                CGAffineTransform transform = CGAffineTransformMake(t->a(), t->b(), t->c(), t->d(), t->tx(), t->ty());
-                                CGContextConcatCTM(context, transform);
-                            }
+                            
                             if(fillGradient->has_startpoint() && fillGradient->has_endpoint())
                             {
-                                CGPoint startPoint  = CGPointMake(fillGradient->startpoint().x(), fillGradient->startpoint().y());
-                                CGPoint endPoint    = CGPointMake(fillGradient->endpoint().x(), fillGradient->endpoint().y());
+                                CGPoint startPoint,endPoint;
+                                startPoint.x = fillGradient->startpoint().has_x() ? fillGradient->startpoint().x() : 0;
+                                startPoint.y = fillGradient->startpoint().has_y() ? fillGradient->startpoint().y() : 0;
+                                endPoint.x = fillGradient->endpoint().has_x() ? fillGradient->endpoint().x() : 1;
+                                endPoint.y = fillGradient->endpoint().has_y() ? fillGradient->endpoint().y() : 0;
+                                
+                                if(!fillGradient->gradientunits_isuserspace())
+                                {
+                                    CGRect rt = CGPathGetBoundingBox(path);
+                                    CGContextTranslateCTM(context, rt.origin.x, rt.origin.y);
+                                    CGContextScaleCTM(context, rt.size.width, rt.size.height);
+                                }
+                                
+                                if(fillGradient->has_gradienttransform())
+                                {
+                                    const ProtoAffineTransformMatrix *t = &fillGradient->gradienttransform();
+                                    CGAffineTransform transform = CGAffineTransformMake(t->a(), t->b(), t->c(), t->d(), t->tx(), t->ty());
+                                    CGContextConcatCTM(context, transform);
+                                }
+                                
                                 CGContextDrawLinearGradient(context, gradient, startPoint, endPoint, kCGGradientDrawsBeforeStartLocation|kCGGradientDrawsAfterEndLocation);
                             }else if(fillGradient->has_center() && fillGradient->has_r())
                             {
-                                CGPoint center  = CGPointMake(fillGradient->center().x(), fillGradient->center().y());
-                                float   r = fillGradient->r();
+                                CGPoint center, focus;
+                                center.x = fillGradient->center().has_x() ? fillGradient->center().x() : 0.5;
+                                center.y = fillGradient->center().has_y() ? fillGradient->center().y() : 0.5;
                                 
                                 if(fillGradient->has_focuspoint())
                                 {
-                                    CGPoint focus  = CGPointMake(fillGradient->focuspoint().x(), fillGradient->focuspoint().y());
-                                    CGContextDrawRadialGradient(context, gradient, focus, 0, center, r, kCGGradientDrawsBeforeStartLocation|kCGGradientDrawsAfterEndLocation);
-                                    
+                                    focus.x = fillGradient->center().has_x() ? fillGradient->center().x() : center.x;
+                                    focus.y = fillGradient->center().has_y() ? fillGradient->center().y() : center.y;
                                 }else
                                 {
-                                    CGContextDrawRadialGradient(context, gradient, center, 0, center, r, kCGGradientDrawsBeforeStartLocation|kCGGradientDrawsAfterEndLocation);
-                                    
+                                    focus = center;
+                                }
+                                float r = fillGradient->has_r() ? fillGradient->r() : 0.5;
+                                
+                                if(!fillGradient->gradientunits_isuserspace())
+                                {
+                                    CGRect rt = CGPathGetBoundingBox(path);
+                                    CGContextTranslateCTM(context, rt.origin.x, rt.origin.y);
+                                    CGContextScaleCTM(context, rt.size.width, rt.size.height);
                                 }
                                 
+                                if(fillGradient->has_gradienttransform())
+                                {
+                                    const ProtoAffineTransformMatrix *t = &fillGradient->gradienttransform();
+                                    CGAffineTransform transform = CGAffineTransformMake(t->a(), t->b(), t->c(), t->d(), t->tx(), t->ty());
+                                    CGContextConcatCTM(context, transform);
+                                }
+                                                                
+                                CGContextDrawRadialGradient(context, gradient, focus, 0, center, r, kCGGradientDrawsBeforeStartLocation|kCGGradientDrawsAfterEndLocation);
                             }
                         }
                     }else
@@ -476,15 +498,15 @@ struct SVGRenderPrivate
                              
                              if (params->has_fill()) {
                                  rc.fill.MergeFrom(params->fill());
-                                 // убираем paint_off если ниже был установлен цвет
-                                 if (params->fill().has_color()) {
+                                 // убираем paint_off если ниже был установлен цвет или градиент
+                                 if (params->fill().has_color() || params->fill().has_ref_id()) {
                                      rc.fill.clear_paint_off();
                                  }
                              }
                              
                              if (params->has_stroke()) {
                                  rc.stroke.MergeFrom(params->stroke());
-                                 if (params->stroke().has_color()) {
+                                 if (params->stroke().has_color() || params->stroke().has_ref_id()) {
                                      rc.stroke.clear_paint_off();
                                  }
                              }

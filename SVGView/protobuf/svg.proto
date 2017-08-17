@@ -85,6 +85,7 @@ message ProtoSVGElementGradient
     optional ProtoPoint                 center              = 7;
     optional float                      r                   = 8;
     optional ProtoPoint                 focusPoint          = 9;
+    optional bool                       gradientUnits_IsUserSpace = 10 [default = true];
 }
 
 
